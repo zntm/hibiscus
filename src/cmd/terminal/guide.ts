@@ -13,6 +13,16 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
 
         for (let { title, emoji, color, description, image } of data)
         {
+            if (color !== undefined)
+            {
+                color = parseInt(color, 16);
+            }
+
+            if (description !== undefined)
+            {
+                description = description.replaceAll('{{time}}', `<t:${Math.floor(Date.now() / 1000)}:F>`)
+            }
+
             const embed = client.utils.embedBuilder(title, emoji, color)
             	.setDescription(description ?? null);
             
