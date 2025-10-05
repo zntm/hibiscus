@@ -4,7 +4,7 @@ import { channel } from '../../../config.json'
 import { IClient } from '../../app.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 
-const starboardData = {
+const starboardData: any = {
     copper: {
         name: 'Copper',
         emoji: '',
