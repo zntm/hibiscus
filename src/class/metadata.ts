@@ -90,6 +90,7 @@ export class TerminalMetadata
      */
     private _addValue(value: string | string[], type: string)
     {
+        // @ts-ignore
         this[type] ??= [];
 
         if (Array.isArray(value))
@@ -121,6 +122,7 @@ export class TerminalMetadata
             return true;
         }
 
+        // @ts-ignore
         return (typeof value === 'string' ? this[type].includes(value) : value.some((v) => this[type].includes(v)));
     }
 
