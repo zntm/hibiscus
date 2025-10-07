@@ -1,0 +1,31 @@
+// @bun
+var __require = import.meta.require;
+
+// src/cmd/terminal/guide.ts
+import { AttachmentBuilder } from "discord.js";
+import { join } from "path";
+import { TerminalMetadata } from "../../class/metadata.js";
+var b09fd1 = "E:\\GitHub\\hibiscus\\build\\src\\cmd\\terminal", run = async (interaction, client, args, attachment) => {
+  args.forEach(async (i) => {
+    let dir = join(b09fd1, `../../resources/guide/${i}.js`), file = Bun.file(dir), { data } = await file.js();
+    for (let { title, emoji, color, description, image } of data) {
+      if (color !== void 0)
+        color = parseInt(color, 16);
+      if (description !== void 0)
+        description = description.replaceAll("{{time}}", `<t:${Math.floor(Date.now() / 1000)}:F>`);
+      let embed = client.utils.embedBuilder(title, emoji, color).setDescription(description ?? null);
+      if (image !== void 0) {
+        let attachment2 = new AttachmentBuilder(join(dir, `../${image}`)).setName(image);
+        embed.setImage(`attachment://${image}`), await interaction.channel?.send({
+          embeds: [embed],
+          files: [attachment2]
+        });
+      } else
+        await interaction.channel?.send({ embeds: [embed] });
+    }
+  });
+}, metadata = new TerminalMetadata().addUser("805697813908160512");
+export {
+  run,
+  metadata
+};

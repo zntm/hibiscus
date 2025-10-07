@@ -6,7 +6,7 @@ import { TerminalMetadata } from '../../class/metadata.ts'
 
 export const run = async (interaction: ChatInputCommandInteraction, client: IClient, args: string[], attachment: Attachment) => {
     args.forEach(async (i) => {
-        const dir = join(__dirname, `../../.res/guide/${i}.json`);
+        const dir = join(__dirname, `../../resources/guide/${i}.json`);
         
         const file = Bun.file(dir);
         const { data } = await file.json();

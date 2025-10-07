@@ -1,7 +1,7 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, Role, SlashCommandBuilder, SlashCommandIntegerOption, SlashCommandStringOption, SlashCommandSubcommandBuilder } from 'discord.js'
 import { createCanvas } from '@napi-rs/canvas'
 
-import { role } from '../../config.json'
+import { role } from '../config.json'
 import { IClient } from '../app.ts'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 import { join } from 'path'
@@ -19,7 +19,7 @@ const colorData: Map<string, {
     readonly roles: string[]
 }> = new Map();
 
-(await Bun.file(join(__dirname, '../.res/canvas.dat')).text())
+(await Bun.file(join(__dirname, '../resources/canvas.dat')).text())
 	.replaceAll('\r', '')
 	.split('\n')
 	.forEach((i) => {

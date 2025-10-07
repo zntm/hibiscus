@@ -1,0 +1,19 @@
+// @bun
+var __require = import.meta.require;
+
+// src/cmd/terminal/game-update.ts
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { TerminalMetadata } from "../../class/metadata.js";
+var components = [
+  new TextInputBuilder().setCustomId("name").setLabel("Enter Name").setStyle(TextInputStyle.Short).setMinLength(1).setMaxLength(50),
+  new TextInputBuilder().setCustomId("emoji").setLabel("Enter Emoji").setStyle(TextInputStyle.Short).setMinLength(1).setMaxLength(50),
+  new TextInputBuilder().setCustomId("version").setLabel("Enter Version").setStyle(TextInputStyle.Short).setMinLength(1).setMaxLength(50),
+  new TextInputBuilder().setCustomId("url").setLabel("Enter URL").setStyle(TextInputStyle.Paragraph).setMinLength(1).setMaxLength(250),
+  new TextInputBuilder().setCustomId("changes").setLabel("Enter Changes").setStyle(TextInputStyle.Paragraph).setMinLength(1).setMaxLength(500)
+].map((i) => new ActionRowBuilder().addComponents(i)), modal = new ModalBuilder().setCustomId("update").setTitle("Update").addComponents(...components), run = async (interaction, client, args, attachment) => {
+  await interaction.showModal(modal);
+}, metadata = new TerminalMetadata().addUser("805697813908160512");
+export {
+  run,
+  metadata
+};

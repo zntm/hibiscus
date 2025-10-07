@@ -1,0 +1,75 @@
+// @bun
+var __require = import.meta.require;
+
+// src/app.ts
+import"@discordjs/rest";
+import { ActivityType, Client, Collection, Events, GatewayIntentBits as Intents, Partials } from "discord.js";
+import"discord-api-types/v10";
+import { readdirSync } from "fs";
+import { join } from "path";
+import Utils from "./class/utils.js";
+import Model from "./class/mongoose.js";
+var b09fd1 = "E:\\GitHub\\hibiscus\\build\\src", client = new Client({
+  intents: [
+    Intents.GuildExpressions,
+    Intents.Guilds,
+    Intents.GuildInvites,
+    Intents.GuildMembers,
+    Intents.GuildMessages,
+    Intents.GuildMessageReactions,
+    Intents.GuildPresences,
+    Intents.GuildWebhooks,
+    Intents.MessageContent
+  ],
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction
+  ]
+});
+client.commands = new Collection;
+client.db = {};
+client.utils = new Utils;
+readdirSync(join(b09fd1, "./schema")).filter((file) => file.endsWith(".js")).forEach(async (file) => {
+  let schema = await import(`./schema/${file}`), name = file.slice(0, -3);
+  client.db[name] = new Model(name, schema.default);
+});
+var body = [], init = async (type, push) => {
+  readdirSync(join(b09fd1, `./${type}`)).filter((file) => file.endsWith(".js")).forEach(async (file) => {
+    let command = await import(`./${type}/${file}`);
+    if (push) {
+      let info = command.metadata.getInfo();
+      client.commands.set(info.name, command), body.push(info);
+    } else
+      client.commands.set(file.slice(0, -3), command);
+  });
+};
+await init("cmd", !0);
+await init("ctx", !0);
+await init("cmd/modal", !1);
+var activities = [
+  "Catharsis",
+  "Leap of Faith",
+  "Phantasia",
+  "Ruins"
+], activityIndex = Math.floor(client.utils.getUptimeDate().getTime()) % activities.length, updateActivity = (client2) => {
+  client2.user.setActivity({
+    name: activities[activityIndex],
+    type: ActivityType.Playing
+  }), activityIndex = (activityIndex + 1) % activities.length;
+};
+client.on(Events.ClientReady, async () => {
+  updateActivity(client), setInterval(updateActivity, 900000, client);
+});
+readdirSync(join(b09fd1, "./events")).filter((file) => file.endsWith(".js")).forEach(async (file) => {
+  let { default: event } = await import(`./events/${file}`);
+  client.on(file.slice(0, -3), event);
+});
+client.login(Bun.env?.DISCORD_TOKEN);
+process.on("uncaughtException", console.error);
+process.on("unhandledRejection", console.error);
+var run = () => {};
+export {
+  run,
+  client
+};

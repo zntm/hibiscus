@@ -1,7 +1,7 @@
 import { ActionRowBuilder, Attachment, AttachmentBuilder, ButtonBuilder, ChatInputCommandInteraction, ContainerBuilder, FileBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, MessageFlags, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThreadAutoArchiveDuration } from 'discord.js'
 import { unzipSync } from 'fflate'
 
-import { channel as c, role } from '../../../config.json'
+import { channel as c, role } from '../../config.json'
 import { IClient } from '../../app.ts'
 import { HEX2DEC } from '../../class/colorsys.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'

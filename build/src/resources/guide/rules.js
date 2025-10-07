@@ -1,0 +1,59 @@
+// @bun
+var __require = import.meta.require;
+
+// src/resources/guide/rules.json
+var data = [
+  {
+    color: "9B66FF",
+    image: "assets/rules.png"
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83D\uDC95 \u3003 Be respectful and accepting towards other users",
+    description: "We do not tolerate personal attacks, rudeness, harassment, slurs, doxxing (revealing someone's personal information), or any other similar behaviors and attitude. We are committed to creating a welcoming and inclusive community for all members, and treating everyone with respect and kindness is a crucial part of that."
+  },
+  {
+    color: "9B66FF",
+    title: "#\uFE0F\u20E3 \u3003 Keep content in their intended channel",
+    description: `To help keep the server organized and easy to navigate, we ask that you post content in its appropriate place. You can find what each of the channels' use is in their channel topic.
+
+-# To ensure that all members can communicate effectively, we ask that you only use English when communicating with others on the server.`
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83D\uDD4A\uFE0F \u3003 No political or religious discussions",
+    description: "To avoid potentially sensitive or divisive conversations, please refrain from discussing political or religious topics anywhere on the server. If you wish to continue these types of conversations, use the direct message to the willing members."
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83D\uDD1E \u3003 Have an appropriate profile",
+    description: "Your profile must not be offensive, disruptive, or confusing. Avoid using excessive emojis or special characters that could make it difficult for others to mention or message you. Additionally, you are not allowed to impersonate other users or staff members to slander or cause controversies using their image."
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83C\uDFF5\uFE0F \u3003 Do not spam",
+    description: "Spamming or repeatedly sending unwanted messages, images, or other content is disallowed. his rule includes using all caps, excessive emojis, or sending multiple messages in a row. Please be mindful of the ongoing conversation and do not interrupt unless you have something relevant to contribute."
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83D\uDCE3 \u3003 Listen to our staff members",
+    description: `Our staff members help keep the server running smoothly and ensure everyone has a positive experience. If a staff member asks you to stop due to certain behaviors or take a specific action, please listen and do your best to comply.
+
+If you have any concerns or issues with a staff member's behavior, then reach out one of our administrators in private, and they will do their best to assess the situation.`
+  },
+  {
+    color: "9B66FF",
+    title: "\uD83D\uDCD2 \u3003 Notes",
+    description: `The Discord Terms of Service and Community Guidelines apply to this server and thes rules. Some rules aren't mentioned in here because they generally apply to every server, and to keep these information channels clean and organized so new members have an easier time reading them.
+
+Thank you for listening and enjoy your stay! If you want to check out some information about the server then you can go over to \u2060<#862397378417917980> and you can find the available channels, roles, and more.
+
+-# Last Updated: {{time}}`
+  }
+], rules_default = {
+  data
+};
+export {
+  rules_default as default,
+  data
+};

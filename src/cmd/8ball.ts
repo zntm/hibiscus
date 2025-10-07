@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 
 import { IClient } from '../app.ts'
-import data from '../.res/8ball.json'
+import data from '../resources/8ball.json'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 
 const parseText = (client: IClient, data: any) => {

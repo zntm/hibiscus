@@ -1,9 +1,9 @@
 import { join } from 'path'
 
-import { channel } from '../../config.json'
+import { channel } from '../config.json'
 import { IClient } from '../app.ts'
 
-const file = Bun.file(join(__dirname, '../.res/welcome.dat'));
+const file = Bun.file(join(__dirname, '../resources/welcome.dat'));
 
 const welcome = (await file.text())
 	.replaceAll('\r', '')

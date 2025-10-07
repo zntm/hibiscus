@@ -1,0 +1,20 @@
+// @bun
+var __require = import.meta.require;
+
+// src/cmd/terminal/gc.ts
+import { MessageFlags } from "discord.js";
+import { TerminalMetadata } from "../../class/metadata.js";
+var run = async (interaction, client, args, attachment) => {
+  if (!global.gc)
+    return client.utils.interactionWarning(interaction, "Manual garbage collection is not enabled!");
+  global.gc();
+  let embed = client.utils.embedBuilder("Garbage Collection", "\uD83D\uDDD1\uFE0F", 9741485).setDescription("Garbage collected!");
+  interaction.reply({
+    embeds: [embed],
+    flags: MessageFlags.Ephemeral
+  });
+}, metadata = new TerminalMetadata().addUser("805697813908160512");
+export {
+  run,
+  metadata
+};

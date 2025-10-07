@@ -1,0 +1,52 @@
+// @bun
+var __require = import.meta.require;
+
+// src/schema/global.ts
+import { Schema } from "mongoose";
+var CountingSettings;
+((CountingSettings2) => {
+  CountingSettings2[CountingSettings2.IsUserStrict = 1] = "IsUserStrict";
+  CountingSettings2[CountingSettings2.IsNumberStrict = 2] = "IsNumberStrict";
+})(CountingSettings ||= {});
+var global_default = new Schema({
+  _id: {
+    type: String
+  },
+  counting: {
+    value: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
+    lastUser: {
+      type: String,
+      default: null
+    },
+    lastTime: {
+      type: Date,
+      default: null
+    },
+    settings: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
+    type: Object,
+    default: null
+  },
+  canvas: {
+    data: {
+      type: Object,
+      default: {}
+    },
+    size: {
+      type: Number,
+      min: 0,
+      default: 0
+    }
+  }
+});
+export {
+  global_default as default,
+  CountingSettings
+};

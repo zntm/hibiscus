@@ -14,7 +14,7 @@ const enum CanvasSize {
 	HeightDouble = Height * 2
 }
 
-const colors = (await Bun.file(join(__dirname, '../.res/color.dic')).text())
+const colors = (await Bun.file(join(__dirname, '../resources/color.dic')).text())
 	.replaceAll('\r', '')
 	.split('\n')
 	.map((i: string) => {

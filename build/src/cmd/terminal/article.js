@@ -1,0 +1,73 @@
+// @bun
+var __require = import.meta.require;
+
+// src/cmd/terminal/article.ts
+import { ActionRowBuilder, AttachmentBuilder, FileBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder, MessageFlags, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThreadAutoArchiveDuration } from "discord.js";
+import { unzipSync } from "fflate";
+import { role } from "../../config.js";
+import { HEX2DEC } from "../../class/colorsys.js";
+import { TerminalMetadata } from "../../class/metadata.js";
+var separatorData = {
+  large: new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large),
+  small: new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small)
+}, run = async (interaction, client, args, attachment) => {
+  if (await interaction.deferReply({ flags: MessageFlags.Ephemeral }), !attachment.contentType?.includes("/zip"))
+    return client.utils.interactionWarning(interaction, "The attachment is not a zip file!");
+  let zip = await (await Bun.fetch(attachment.url)).arrayBuffer(), zipContent = unzipSync(Buffer.from(zip)), fileData = {};
+  Object.entries(zipContent).forEach(([rawName, u8]) => {
+    if (!rawName.endsWith("/")) {
+      let name = rawName.replaceAll("\x00", "").trim(), buffer = Buffer.from(u8);
+      fileData[name] = { name, buffer };
+    }
+  });
+  let components = [], { data, title } = Bun.YAML.parse((fileData["data.yml"] ?? fileData["data.yaml"]).buffer.toString("utf8"));
+  data.forEach(({ color, content }) => {
+    let container = client.utils.containerBuilder(color ? HEX2DEC(color) : null);
+    content?.forEach(({ type, value }) => {
+      switch (type) {
+        case "file":
+          let file2 = new FileBuilder().setSpoiler(value?.spoiler ?? !1).setURL(`attachment://a_${value.url}`);
+          container.addFileComponents(file2);
+          break;
+        case "image":
+          let media = new MediaGalleryBuilder;
+          value.forEach((v) => {
+            let item = new MediaGalleryItemBuilder().setSpoiler(v?.spoiler ?? !1).setURL(`attachment://a_${v.url}`);
+            if (v?.description)
+              item.setDescription(v.description);
+            media.addItems(item);
+          }), container.addMediaGalleryComponents(media);
+          break;
+        case "separator":
+          if (value === "large")
+            container.addSeparatorComponents(separatorData.large);
+          else if (value === "small")
+            container.addSeparatorComponents(separatorData.small);
+          break;
+        case "text":
+          let text = new TextDisplayBuilder().setContent(value);
+          container.addTextDisplayComponents(text);
+          break;
+        case "url":
+          let components2 = new ActionRowBuilder().addComponents(value.map(({ label, url }) => client.utils.buttonBuilder(url, label)));
+          container.addActionRowComponents(components2);
+          break;
+      }
+    }), components.push(container);
+  });
+  let channel = await interaction.guild?.channels.fetch("1405116743361499256"), files = Object.values(fileData).filter((f) => f.name.startsWith("resources/")).map((f) => new AttachmentBuilder(f.buffer).setName(`a_${f.name.substring(10)}`));
+  channel?.threads.create({
+    name: title,
+    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+    reason: "test",
+    message: {
+      components,
+      files,
+      flags: MessageFlags.IsComponentsV2
+    }
+  });
+}, metadata = new TerminalMetadata().addUser("805697813908160512").addRole(role.articleWriter);
+export {
+  run,
+  metadata
+};

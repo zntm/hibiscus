@@ -1,0 +1,19 @@
+// @bun
+var __require = import.meta.require;
+
+// src/events/messageCreate.ts
+import { readdirSync } from "fs";
+import { join } from "path";
+var b09fd1 = "E:\\GitHub\\hibiscus\\build\\src\\events", commands = readdirSync(join(b09fd1, "../message")).filter((i) => i.endsWith(".js")).map((file) => {
+  return __require(`../message/${file}`);
+}), messageCreate_default = (message) => {
+  let channelId = message.channel.id, userId = message.author.id;
+  for (let { run, info } of commands)
+    if ((info.getUsers() === void 0 || info.hasUser(userId)) && (info.getChannels() === void 0 || info.hasChannel(channelId))) {
+      run(message, message.client);
+      return;
+    }
+};
+export {
+  messageCreate_default as default
+};

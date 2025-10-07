@@ -1,4 +1,4 @@
-import { channel } from '../../config.json'
+import { channel } from '../config.json'
 import { IClient } from '../app.ts'
 import { CountingSettings } from '../schema/global.ts'
 import { TerminalMetadata } from '../class/metadata.ts'

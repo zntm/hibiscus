@@ -1,0 +1,92 @@
+// @bun
+var __require = import.meta.require;
+
+// src/class/metadata.ts
+var CommandCategory;
+((CommandCategory2) => {
+  CommandCategory2.General = "General";
+  CommandCategory2.Fun = "Fun";
+  CommandCategory2.Utility = "Utility";
+})(CommandCategory ||= {});
+
+class Metadata {
+  _info;
+  constructor(info) {
+    this._info = info;
+  }
+  getInfo() {
+    return this._info;
+  }
+}
+
+class CommandMetadata extends Metadata {
+  _category;
+  _isDeveloperCommand = !1;
+  constructor(category, info) {
+    super(info);
+    this._category = category;
+  }
+  getCategory() {
+    return this._category;
+  }
+  setIsDeveloperCommand() {
+    this._isDeveloperCommand = !0;
+  }
+  getIsDeveloperCommand() {
+    return this._isDeveloperCommand;
+  }
+}
+
+class ContextMetadata extends Metadata {
+}
+
+class TerminalMetadata {
+  _channels;
+  _roles;
+  _users;
+  _addValue(value, type) {
+    if (this[type] ??= [], Array.isArray(value))
+      this[type].push(...value);
+    else
+      this[type].push(value);
+    return this;
+  }
+  _hasValue(value, type) {
+    if (!this[type])
+      return !0;
+    return typeof value === "string" ? this[type].includes(value) : value.some((v) => this[type].includes(v));
+  }
+  addChannel(channel) {
+    return this._addValue(channel, "_channels");
+  }
+  hasChannel(channel) {
+    return this._hasValue(channel, "_channels");
+  }
+  getChannels() {
+    return this._channels;
+  }
+  addRole(role) {
+    return this._addValue(role, "_roles");
+  }
+  hasRole(role) {
+    return this._hasValue(role, "_roles");
+  }
+  getRoles() {
+    return this._roles;
+  }
+  addUser(user) {
+    return this._addValue(user, "_users");
+  }
+  hasUser(user) {
+    return this._hasValue(user, "_user");
+  }
+  getUsers() {
+    return this._users;
+  }
+}
+export {
+  TerminalMetadata,
+  ContextMetadata,
+  CommandMetadata,
+  CommandCategory
+};
