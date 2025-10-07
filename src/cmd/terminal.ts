@@ -2,7 +2,7 @@ import { ChannelType, ChatInputCommandInteraction, Role, SlashCommandAttachmentO
 import { readdirSync } from 'fs'
 import { join } from 'path'
 
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 
 const subcommandData: Map<string, any> = new Map();

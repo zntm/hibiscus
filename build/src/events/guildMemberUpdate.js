@@ -1,21 +1,3 @@
 // @bun
-var __require = import.meta.require;
-
-// src/events/guildMemberUpdate.ts
-import { join } from "path";
-import { channel } from "../config.js";
-var b09fd1 = "E:\\GitHub\\hibiscus\\build\\src\\events", file = Bun.file(join(b09fd1, "../resources/welcome.dat")), welcome = (await file.text()).replaceAll("\r", "").split(`
-`), guildMemberUpdate_default = async (oldMember, newMember) => {
-  if (!oldMember.pending || newMember.pending)
-    return;
-  let client = newMember.client, description = client.utils.choose(welcome).replaceAll("{{user}}", `<@${newMember.user.id}>`).replaceAll("{{name}}", newMember.guild.name), embed = client.utils.embedBuilder("Welcome", "\uD83D\uDC4B", 16768093).setDescription(description).setThumbnail(newMember.displayAvatarURL({
-    size: 128,
-    dynamic: !0
-  })).setTimestamp(), c = client.channels.cache.get(channel.welcome);
-  if (!c)
-    return;
-  (await c.send({ embeds: [embed] })).react("\uD83D\uDC4B");
-};
-export {
-  guildMemberUpdate_default as default
-};
+var __require=import.meta.require;import{join}from"path";import{channel}from"../config.js";var b09fd1="E:\\GitHub\\hibiscus\\build\\src\\events",file=Bun.file(join(b09fd1,"../resources/welcome.dat")),welcome=(await file.text()).replaceAll("\r","").split(`
+`),guildMemberUpdate_default=async(oldMember,newMember)=>{if(!oldMember.pending||newMember.pending)return;let client=newMember.client,description=client.utils.choose(welcome).replaceAll("{{user}}",`<@${newMember.user.id}>`).replaceAll("{{name}}",newMember.guild.name),embed=client.utils.embedBuilder("Welcome","\uD83D\uDC4B",16768093).setDescription(description).setThumbnail(newMember.displayAvatarURL({size:128,dynamic:!0})).setTimestamp(),c=client.channels.cache.get(channel.welcome);if(!c)return;(await c.send({embeds:[embed]})).react("\uD83D\uDC4B")};export{guildMemberUpdate_default as default};

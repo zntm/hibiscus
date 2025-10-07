@@ -2,7 +2,7 @@ import { ActionRowBuilder, Attachment, AttachmentBuilder, ButtonBuilder, ChatInp
 import { unzipSync } from 'fflate'
 
 import { channel as c, role } from '../../config.json'
-import { IClient } from '../../app.ts'
+import { IClient } from '../../index.ts'
 import { HEX2DEC } from '../../class/colorsys.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 

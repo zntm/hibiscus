@@ -1,5 +1,5 @@
 import { channel } from '../config.json'
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { CountingSettings } from '../schema/global.ts'
 import { TerminalMetadata } from '../class/metadata.ts'
 

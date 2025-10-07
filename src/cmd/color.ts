@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBuilder, Sl
 import { createCanvas } from '@napi-rs/canvas'
 import { join } from 'path'
 
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { HEX2RGB, HSV2HEX, HSV2RGB, RGB2HEX, RGB2HSV, RGB2HSL, RGB2CMYK } from '../class/colorsys.ts'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 

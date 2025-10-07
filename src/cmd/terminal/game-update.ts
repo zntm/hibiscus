@@ -1,6 +1,6 @@
 import { ActionRowBuilder, Attachment, ChatInputCommandInteraction, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js'
 
-import { IClient } from '../../app.ts'
+import { IClient } from '../../index.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 
 const components: any = [

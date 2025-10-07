@@ -1,67 +1,9 @@
 // @bun
-var __require = import.meta.require;
-
-// src/cmd/color.ts
-import { AttachmentBuilder, SlashCommandBuilder, SlashCommandIntegerOption, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "discord.js";
-import { createCanvas } from "@napi-rs/canvas";
-import { join } from "path";
-import { HEX2RGB, HSV2HEX, HSV2RGB, RGB2HEX, RGB2HSV, RGB2HSL, RGB2CMYK } from "../class/colorsys.js";
-import { CommandCategory, CommandMetadata } from "../class/metadata.js";
-var b09fd1 = "E:\\GitHub\\hibiscus\\build\\src\\cmd";
-var colors = (await Bun.file(join(b09fd1, "../resources/color.dic")).text()).replaceAll("\r", "").split(`
-`).map((i) => {
-  let [name, color] = i.split(","), decimal = parseInt(color, 16);
-  return {
-    name,
-    r: decimal >> 0 & 255,
-    g: decimal >> 8 & 255,
-    b: decimal >> 16 & 255
-  };
-}), nearestColor = (r, g, b) => {
-  let name = "", minDistance = 195076;
-  return colors.forEach(({ name: currentName, r: currentR, g: currentG, b: currentB }) => {
-    let distance = (r - currentR) ** 2 + (g - currentG) ** 2 + (b - currentB) ** 2;
-    if (minDistance > distance)
-      name = currentName, minDistance = distance;
-  }), name;
-}, canvasThumbnail = createCanvas(32, 32), contextThumbnail = canvasThumbnail.getContext("2d"), canvasColors = createCanvas(360 /* Width */, 96), contextColors = canvasColors.getContext("2d"), gradient = (x0, y0, x1, y1, fromColor, toColor, fillRectY, fillRectW, fillRectH) => {
-  let gradient2 = contextColors.createLinearGradient(x0, y0, x1, y1);
-  gradient2.addColorStop(0, fromColor), gradient2.addColorStop(1, toColor), contextColors.fillStyle = gradient2, contextColors.fillRect(x0, fillRectY, fillRectW, fillRectH);
-}, run = async (interaction, client) => {
-  await interaction.deferReply();
-  let subcommand = interaction.options.getSubcommand(), hex = "", rgb = null;
-  if (subcommand === "hex") {
-    if (hex = (interaction.options.getString("hex") ?? "").toLowerCase().padStart(7, "#"), isNaN(parseInt(hex.replace("#", ""), 16)))
-      return client.utils.interactionWarning(interaction, `${hex} isn't a valid hex code!`);
-    rgb = HEX2RGB(hex);
-  } else if (subcommand === "rgb") {
-    let r2 = interaction.options.getInteger("red") ?? 0, g2 = interaction.options.getInteger("green") ?? 0, b2 = interaction.options.getInteger("blue") ?? 0;
-    hex = RGB2HEX(r2, g2, b2), rgb = { r: r2, g: g2, b: b2 };
-  } else if (subcommand === "hsv") {
-    let h2 = interaction.options.getInteger("hue") ?? 0, s2 = interaction.options.getInteger("saturation") ?? 0, v2 = interaction.options.getInteger("value") ?? 0;
-    hex = HSV2HEX(h2, s2, v2), rgb = HSV2RGB(h2, s2, v2);
-  }
-  let { r, g, b } = rgb, { h, s, v } = RGB2HSV(r, g, b);
-  for (let i = 0;i < 360 /* Width */; ++i)
-    contextColors.fillStyle = HSV2HEX(h + i, s, v), contextColors.fillRect(i, 0, 1, 24 /* Height */);
-  let average = Math.round((r + g + b) / 3);
-  gradient(0, 0, 360 /* Width */, 24 /* Height */, RGB2HEX(average, average, average), hex, 24 /* Height */, 360 /* Width */, 24 /* Height */), gradient(0, 0, 180 /* WidthHalf */, 24 /* Height */, "#000000", hex, 48 /* HeightDouble */, 180 /* WidthHalf */, 24 /* Height */), gradient(180 /* WidthHalf */, 0, 360 /* Width */, 24 /* Height */, hex, "#ffffff", 48 /* HeightDouble */, 180 /* WidthHalf */, 24 /* Height */), gradient(0, 0, 360 /* Width */, 24 /* Height */, hex, RGB2HEX(Math.abs(r - 255), Math.abs(g - 255), Math.abs(b - 255)), 72, 360 /* Width */, 24 /* Height */), contextThumbnail.fillStyle = hex, contextThumbnail.fillRect(0, 0, 32, 32);
-  let cmyk = RGB2CMYK(r, g, b), hsl = RGB2HSL(r, g, b), decimal = b << 16 | g << 8 | r, embed = client.utils.embedBuilder("Color", "\uD83C\uDFA8", r << 16 | g << 8 | b).setThumbnail("attachment://thumbnail.png").setDescription(`Closest Name \u3003 ${nearestColor(decimal)}
-` + `Hex \u3003 ${hex.toUpperCase()}
-` + `RGB \u3003 ${r}, ${g}, ${b}
-` + `HSV \u3003 ${h}, ${s}, ${v}
-` + `HSL \u3003 ${hsl.h}, ${hsl.s}%, ${hsl.l}%
-` + `CMYK \u3003 ${Math.round(cmyk.c * 1e4) / 100}, ${Math.round(cmyk.m * 1e4) / 100}, ${Math.round(cmyk.y * 1e4) / 100}, ${Math.round(cmyk.k * 1e4) / 100}
-` + `Decimal \u3003 ${decimal}`).setImage("attachment://colors.png").setFooter({ text: "The image above shows hue, saturation, brightness and inverted version in order." });
-  interaction.editReply({
-    embeds: [embed],
-    files: [
-      new AttachmentBuilder(await canvasThumbnail.encode("png")).setName("thumbnail.png"),
-      new AttachmentBuilder(await canvasColors.encode("png")).setName("colors.png")
-    ]
-  });
-}, metadata = new CommandMetadata(CommandCategory.Utility, new SlashCommandBuilder().setName("color").setDescription("Show general information about a color").addSubcommand(new SlashCommandSubcommandBuilder().setName("hex").setDescription("Get the color information of a hex code").addStringOption(new SlashCommandStringOption().setName("hex").setDescription("Set the hex code of the color").setMinLength(3).setMaxLength(7).setRequired(!0))).addSubcommand(new SlashCommandSubcommandBuilder().setName("rgb").setDescription("Get the color information of an RGB value").addIntegerOption(new SlashCommandIntegerOption().setName("red").setDescription("Set the red value of the color").setMinValue(0).setMaxValue(255).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("green").setDescription("Set the green value of the color").setMinValue(0).setMaxValue(255).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("blue").setDescription("Set the blue value of the color").setMinValue(0).setMaxValue(255).setRequired(!0))).addSubcommand(new SlashCommandSubcommandBuilder().setName("hsv").setDescription("Get the color information of an HSV value").addIntegerOption(new SlashCommandIntegerOption().setName("hue").setDescription("Set the hue of the color").setMinValue(0).setMaxValue(360).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("saturation").setDescription("Set the saturation of the color").setMinValue(0).setMaxValue(100).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("value").setDescription("Set the value of the color").setMinValue(0).setMaxValue(100).setRequired(!0))));
-export {
-  run,
-  metadata
-};
+var __require=import.meta.require;import{AttachmentBuilder,SlashCommandBuilder,SlashCommandIntegerOption,SlashCommandStringOption,SlashCommandSubcommandBuilder}from"discord.js";import{createCanvas}from"@napi-rs/canvas";import{join}from"path";import{HEX2RGB,HSV2HEX,HSV2RGB,RGB2HEX,RGB2HSV,RGB2HSL,RGB2CMYK}from"../class/colorsys.js";import{CommandCategory,CommandMetadata}from"../class/metadata.js";var b09fd1="E:\\GitHub\\hibiscus\\build\\src\\cmd";var colors=(await Bun.file(join(b09fd1,"../resources/color.dic")).text()).replaceAll("\r","").split(`
+`).map((i)=>{let[name,color]=i.split(","),decimal=parseInt(color,16);return{name,r:decimal>>0&255,g:decimal>>8&255,b:decimal>>16&255}}),nearestColor=(r,g,b)=>{let name="",minDistance=195076;return colors.forEach(({name:currentName,r:currentR,g:currentG,b:currentB})=>{let distance=(r-currentR)**2+(g-currentG)**2+(b-currentB)**2;if(minDistance>distance)name=currentName,minDistance=distance}),name},canvasThumbnail=createCanvas(32,32),contextThumbnail=canvasThumbnail.getContext("2d"),canvasColors=createCanvas(360,96),contextColors=canvasColors.getContext("2d"),gradient=(x0,y0,x1,y1,fromColor,toColor,fillRectY,fillRectW,fillRectH)=>{let gradient2=contextColors.createLinearGradient(x0,y0,x1,y1);gradient2.addColorStop(0,fromColor),gradient2.addColorStop(1,toColor),contextColors.fillStyle=gradient2,contextColors.fillRect(x0,fillRectY,fillRectW,fillRectH)},run=async(interaction,client)=>{await interaction.deferReply();let subcommand=interaction.options.getSubcommand(),hex="",rgb=null;if(subcommand==="hex"){if(hex=(interaction.options.getString("hex")??"").toLowerCase().padStart(7,"#"),isNaN(parseInt(hex.replace("#",""),16)))return client.utils.interactionWarning(interaction,`${hex} isn't a valid hex code!`);rgb=HEX2RGB(hex)}else if(subcommand==="rgb"){let r2=interaction.options.getInteger("red")??0,g2=interaction.options.getInteger("green")??0,b2=interaction.options.getInteger("blue")??0;hex=RGB2HEX(r2,g2,b2),rgb={r:r2,g:g2,b:b2}}else if(subcommand==="hsv"){let h2=interaction.options.getInteger("hue")??0,s2=interaction.options.getInteger("saturation")??0,v2=interaction.options.getInteger("value")??0;hex=HSV2HEX(h2,s2,v2),rgb=HSV2RGB(h2,s2,v2)}let{r,g,b}=rgb,{h,s,v}=RGB2HSV(r,g,b);for(let i=0;i<360;++i)contextColors.fillStyle=HSV2HEX(h+i,s,v),contextColors.fillRect(i,0,1,24);let average=Math.round((r+g+b)/3);gradient(0,0,360,24,RGB2HEX(average,average,average),hex,24,360,24),gradient(0,0,180,24,"#000000",hex,48,180,24),gradient(180,0,360,24,hex,"#ffffff",48,180,24),gradient(0,0,360,24,hex,RGB2HEX(Math.abs(r-255),Math.abs(g-255),Math.abs(b-255)),72,360,24),contextThumbnail.fillStyle=hex,contextThumbnail.fillRect(0,0,32,32);let cmyk=RGB2CMYK(r,g,b),hsl=RGB2HSL(r,g,b),decimal=b<<16|g<<8|r,embed=client.utils.embedBuilder("Color","\uD83C\uDFA8",r<<16|g<<8|b).setThumbnail("attachment://thumbnail.png").setDescription(`Closest Name \u3003 ${nearestColor(decimal)}
+`+`Hex \u3003 ${hex.toUpperCase()}
+`+`RGB \u3003 ${r}, ${g}, ${b}
+`+`HSV \u3003 ${h}, ${s}, ${v}
+`+`HSL \u3003 ${hsl.h}, ${hsl.s}%, ${hsl.l}%
+`+`CMYK \u3003 ${Math.round(cmyk.c*1e4)/100}, ${Math.round(cmyk.m*1e4)/100}, ${Math.round(cmyk.y*1e4)/100}, ${Math.round(cmyk.k*1e4)/100}
+`+`Decimal \u3003 ${decimal}`).setImage("attachment://colors.png").setFooter({text:"The image above shows hue, saturation, brightness and inverted version in order."});interaction.editReply({embeds:[embed],files:[new AttachmentBuilder(await canvasThumbnail.encode("png")).setName("thumbnail.png"),new AttachmentBuilder(await canvasColors.encode("png")).setName("colors.png")]})},metadata=new CommandMetadata(CommandCategory.Utility,new SlashCommandBuilder().setName("color").setDescription("Show general information about a color").addSubcommand(new SlashCommandSubcommandBuilder().setName("hex").setDescription("Get the color information of a hex code").addStringOption(new SlashCommandStringOption().setName("hex").setDescription("Set the hex code of the color").setMinLength(3).setMaxLength(7).setRequired(!0))).addSubcommand(new SlashCommandSubcommandBuilder().setName("rgb").setDescription("Get the color information of an RGB value").addIntegerOption(new SlashCommandIntegerOption().setName("red").setDescription("Set the red value of the color").setMinValue(0).setMaxValue(255).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("green").setDescription("Set the green value of the color").setMinValue(0).setMaxValue(255).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("blue").setDescription("Set the blue value of the color").setMinValue(0).setMaxValue(255).setRequired(!0))).addSubcommand(new SlashCommandSubcommandBuilder().setName("hsv").setDescription("Get the color information of an HSV value").addIntegerOption(new SlashCommandIntegerOption().setName("hue").setDescription("Set the hue of the color").setMinValue(0).setMaxValue(360).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("saturation").setDescription("Set the saturation of the color").setMinValue(0).setMaxValue(100).setRequired(!0)).addIntegerOption(new SlashCommandIntegerOption().setName("value").setDescription("Set the value of the color").setMinValue(0).setMaxValue(100).setRequired(!0))));export{run,metadata};

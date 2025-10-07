@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandStringOption } from 'discord.js'
 
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 
 export const run = async (interaction: ChatInputCommandInteraction, client: IClient) => {

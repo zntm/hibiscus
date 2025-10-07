@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalSubmitInteraction } from 'discord.js'
 
-import { IClient } from '../../app.ts'
+import { IClient } from '../../index.ts'
 
 const embedColor = {
     phantasia: 0xBF0D4B

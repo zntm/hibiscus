@@ -1,37 +1,37 @@
 import { readdirSync } from 'fs'
 
-const entrypoints: string[] = [];
-const recursiveDirectory = (src: string) => {
+const findEntrypoints = (src: string, data: string[] = []) => {
     try
     {
         readdirSync(src).forEach((file) => {
             if (/([a-z]+\.[a-z]+)$/g.test(`${src}/${file}`))
             {
-                entrypoints.push(`${src}/${file}`);
+                data.push(`${src}/${file}`);
             }
             else
             {
-                recursiveDirectory(`${src}/${file}`);
+                findEntrypoints(`${src}/${file}`, data);
             }
         });
     }
     catch
     {
-        return;
     }
+
+    return data;
 }
 
-recursiveDirectory('./src');
+const entrypoints: string[] = findEntrypoints('./src');
 
 Bun.build({
     entrypoints,
     outdir: './build',
     target: 'bun',
     minify: {
-        whitespace: false,
+        whitespace: true,
         identifiers: false,
         syntax: true,
-        keepNames: true
+        keepNames: false
     },
     // splitting: true,
     external: [ '*' ],
@@ -46,12 +46,11 @@ Bun.build({
 
                     contents = contents
                         .replaceAll('.ts', '.js')
-                        .replaceAll('.json', '.js')
-                        // .replace(/\/[a-z]+.js/g, '.json');
+                        .replaceAll('.json', '.js');
                     
+                    // NOTE: Hacky fix for __dirname.
                     if (contents.includes('__dirname'))
                     {
-                        // NOTE: Hacky fix for __dirname.
                         contents = 'var b09fd1="' + args.path.split('\\').slice(0, -1).join('\\\\').replaceAll('\\\\hibiscus', '\\\\hibiscus\\\\build') + '";' + contents.replaceAll('__dirname', 'b09fd1');
 
                         console.log(contents)

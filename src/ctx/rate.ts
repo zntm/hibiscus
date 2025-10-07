@@ -1,6 +1,6 @@
 import { ApplicationCommandType, ContextMenuCommandBuilder, ContextMenuCommandInteraction } from 'discord.js'
 
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { ContextMetadata } from '../class/metadata.ts'
 
 export const run = (interaction: ContextMenuCommandInteraction, client: IClient) => {

@@ -1,6 +1,6 @@
 import { Attachment, ChatInputCommandInteraction } from 'discord.js'
 
-import { IClient } from '../../app.ts'
+import { IClient } from '../../index.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 import { CountingSettings } from '../../schema/global.ts'
 

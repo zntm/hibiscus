@@ -1,7 +1,7 @@
 import { Attachment, AttachmentBuilder, ChannelType, ChatInputCommandInteraction } from 'discord.js'
 import { join } from 'path'
 
-import { IClient } from '../../app.ts'
+import { IClient } from '../../index.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 
 export const run = async (interaction: ChatInputCommandInteraction, client: IClient, args: string[], attachment: Attachment) => {

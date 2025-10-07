@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, Role, SlashCommandBuild
 import { createCanvas } from '@napi-rs/canvas'
 
 import { role } from '../config.json'
-import { IClient } from '../app.ts'
+import { IClient } from '../index.ts'
 import { CommandCategory, CommandMetadata } from '../class/metadata.ts'
 import { join } from 'path'
 
