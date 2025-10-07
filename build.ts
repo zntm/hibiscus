@@ -52,8 +52,6 @@ Bun.build({
                     if (contents.includes('__dirname'))
                     {
                         contents = 'var b09fd1="' + args.path.split('\\').slice(0, -1).join('\\\\').replaceAll('\\\\hibiscus', '\\\\hibiscus\\\\build') + '";' + contents.replaceAll('__dirname', 'b09fd1');
-
-                        console.log(contents)
                     }
 
                     return {
