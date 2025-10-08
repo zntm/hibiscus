@@ -13,24 +13,7 @@ const enum Canvas {
     BrushMaxDistance = 10
 }
 
-const colorData: Map<string, {
-    readonly name: string,
-    readonly hex: string
-    readonly roles: string[]
-}> = new Map();
-
-(await Bun.file(join(__dirname, '../resources/canvas.dat')).text())
-	.replaceAll('\r', '')
-	.split('\n')
-	.forEach((i) => {
-		let [ id, name, hex, roles ]: any = i.split(',');
-    
-		colorData.set(id, {
-            name,
-            hex: `#${hex}`,
-            roles: roles?.split(':')
-        });
-	});
+import colorData from '../resources/canvas.json'
 
 const canvas = createCanvas(Canvas.ImageSize, Canvas.ImageSize);
 const context = canvas.getContext('2d');
@@ -45,11 +28,7 @@ const getIndex = (x: number, y: number, size: number) => {
 const compressCanvasData = (canvasData: string[]) => {
     const data: any = {}
     
-    colorData
-        .keys()
-        // @ts-ignore
-    	.toArray()
-    	.forEach((i: string) => data[i] = []);
+    Object.keys(colorData).forEach((i: string) => data[i] = []);
     
     for (let i = 0; i < canvasData.length;)
     {
@@ -115,7 +94,8 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
             return client.utils.interactionWarning(interaction, `Only <@&${role.booster}> can change brush size!`);
         }
 
-        const roles = colorData.get(color)?.roles;
+        // @ts-ignore
+        const roles = colorData[color]?.roles;
 
         if (roles !== undefined && !member?.roles.cache.every((r: Role) => roles.includes(r.id)))
         {
@@ -197,7 +177,8 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
             
 			if (color === undefined) continue;
             
-            const hex = colorData.get(color)?.hex;
+            // @ts-ignore
+            const hex = colorData[color]?.hex;
             
             if (hex === '#ffffff') continue;
             
@@ -240,14 +221,10 @@ export const metadata = new CommandMetadata(CommandCategory.Fun, new SlashComman
 		.addStringOption(new SlashCommandStringOption()
 			.setName('color')
 			.setDescription('Choose a color to paint with')
-			.addChoices(colorData
-				.entries()
-                // @ts-ignore
-				.toArray()
-				.map(([ index, { name } ]: any) => ({
-    				name,
-					value: index
-				})))
+			.addChoices(Object.entries(colorData).map(([ index, { name } ]: any) => ({
+                name,
+                value: index
+			})))
 			.setRequired(true))
 		.addIntegerOption(new SlashCommandIntegerOption()
 			.setName('brush-size')

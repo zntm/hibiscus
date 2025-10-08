@@ -1,0 +1,111 @@
+{
+    "white": {
+        "name": "White",
+        "hex": "#FFFFFF"
+    },
+    "brown": {
+        "name": "Brown",
+        "hex": "#873921"
+    },
+    "red": {
+        "name": "Red",
+        "hex": "#CE1A14"
+    },
+    "orange": {
+        "name": "Orange",
+        "hex": "#DB5A1A"
+    },
+    "yellow": {
+        "name": "Yellow",
+        "hex": "#FFB22D"
+    },
+    "lime": {
+        "name": "Lime",
+        "hex": "#34EF3E"
+    },
+    "green": {
+        "name": "Green",
+        "hex": "#27912C"
+    },
+    "cyan": {
+        "name": "Cyan",
+        "hex": "#2BAF86"
+    },
+    "light_blue": {
+        "name": "Light Blue",
+        "hex": "#49F5FF"
+    },
+    "blue": {
+        "name": "Blue",
+        "hex": "#265FAF"
+    },
+    "purple": {
+        "name": "Purple",
+        "hex": "#551DAF"
+    },
+    "magenta": {
+        "name": "Magenta",
+        "hex": "#D428FF"
+    },
+    "pink": {
+        "name": "Pink",
+        "hex": "#FF1980"
+    },
+    "light_gray": {
+        "name": "Light Gray",
+        "hex": "#5E5F68"
+    },
+    "dark_gray": {
+        "name": "Dark Gray",
+        "hex": "#323439"
+    },
+    "black": {
+        "name": "Black",
+        "hex": "#1E2028"
+    },
+    "beige": {
+        "name": "Beige",
+        "hex": "#E2A26C",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_red": {
+        "name": "Pastel Red",
+        "hex": "#FF443A",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_orange": {
+        "name": "Pastel Orange",
+        "hex": "#FF8C3F",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_yellow": {
+        "name": "Pastel Yellow",
+        "hex": "#FFFC5E",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_green": {
+        "name": "Pastel Green",
+        "hex": "#89FF4F",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_cyan": {
+        "name": "Pastel Cyan",
+        "hex": "#82D3FF",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_blue": {
+        "name": "Pastel Blue",
+        "hex": "#7C70FF",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_purple": {
+        "name": "Pastel Purple",
+        "hex": "#BD7CFF",
+        "roles": [ "860758781872439317" ]
+    },
+    "pastel_pink": {
+        "name": "Pastel Pink",
+        "hex": "#FF8CB4",
+        "roles": [ "860758781872439317" ]
+    }
+}
