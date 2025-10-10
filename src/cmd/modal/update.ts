@@ -2,8 +2,11 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalSubmitInteraction } 
 
 import { IClient } from '../../index.ts'
 
-const embedColor = {
-    phantasia: 0xBF0D4B
+const embedColor: any = {
+    catharsis: 0xBF0D4B,
+    leap_of_faith: 0xBF0D4B,
+    phantasia: 0xBF0D4B,
+    ruins: 0xBF0D4B
 }
 
 export const run = async (interaction: ModalSubmitInteraction, client: IClient) => {

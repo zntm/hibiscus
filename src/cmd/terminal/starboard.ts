@@ -5,23 +5,18 @@ import { IClient } from '../../index.ts'
 import { TerminalMetadata } from '../../class/metadata.ts'
 
 const starboardData: any = {
-    copper: {
-        name: 'Copper',
+    tier1: {
+        name: 'Tier 1',
         emoji: '',
         color: 0x000000
     },
-    iron: {
-        name: 'Iron',
+    tier2: {
+        name: 'Tier 2',
         emoji: '',
         color: 0x000000
     },
-    gold: {
-        name: 'Gold',
-        emoji: '',
-        color: 0x000000
-    },
-    platinum: {
-        name: 'Platinum',
+    tier3: {
+        name: 'Tier 3',
         emoji: '',
         color: 0x000000
     }
@@ -38,22 +33,11 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
 
     if (c instanceof TextChannel)
     {
-        let { starboard } = (await client.db.user.find(m?.author.id))[0];
+        let { starboard } = (await client.db.user.find(m?.author.id))[0] ?? {};
 
-        if (starboard !== undefined)
-        {
-            starboard[rating] = (starboard[rating] ?? 0) + 1;
+        starboard[rating] = (starboard[rating] ?? 0) + 1;
 
-            await client.db.user.update(m?.author.id, { starboard });
-        }
-        else
-        {
-            await client.db.user.update(m?.author.id, {
-                starboard: {
-                    [ rating ]: 1
-                }
-            });
-        }
+        await client.db.user.update(m?.author.id, { starboard });
 
         const data = starboardData[rating];
 

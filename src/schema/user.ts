@@ -10,22 +10,17 @@ export default new Schema({
         type: String
     },
     starboard: {
-        copper: {
+        tier1: {
             type: Number,
             min: 0,
             default: 0
         },
-        iron: {
+        tier2: {
             type: Number,
             min: 0,
             default: 0
         },
-        gold: {
-            type: Number,
-            min: 0,
-            default: 0
-        },
-        platinum: {
+        tier3: {
             type: Number,
             min: 0,
             default: 0

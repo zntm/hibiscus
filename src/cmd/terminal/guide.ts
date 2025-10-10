@@ -1,4 +1,4 @@
-import { Attachment, AttachmentBuilder, ChannelType, ChatInputCommandInteraction } from 'discord.js'
+import { Attachment, AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js'
 import { join } from 'path'
 
 import { IClient } from '../../index.ts'

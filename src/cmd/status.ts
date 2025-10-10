@@ -25,15 +25,16 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
     	.addFields([
             {
                 name: 'Uptime',
-                value: `${client.utils.formatNumber(hours).padStart(2, '0')}h:${client.utils.formatNumber(minutes / 60).padStart(2, '0')}m:${client.utils.formatNumber(seconds).padStart(2, '0')}s\n` +
-        `<t:${Math.round(uptimeDate)}:R>`,
+                value:
+                    `${client.utils.formatNumber(hours).padStart(2, '0')}h:${minutes.toString().padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s\n` +
+                    `<t:${Math.round(uptimeDate)}:R>`,
                 inline: true
             },
             {
                 name: 'Memory',
                 value: `${Object.keys(memoryUsage)
                     .map((key: string) => {
-                        const mb = memoryUsage[key] / 1_024 / 1_024;
+                        const mb = memoryUsage[key] / (1_024 * 1_024);
 
                         return `${MemoryUsage[key as keyof typeof MemoryUsage]}: ${mb > 1 ? `${mb.toFixed(2)} MB` : `${(memoryUsage[key] / 1024).toFixed(2)} KB`}`
                     })

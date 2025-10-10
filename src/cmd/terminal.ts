@@ -55,7 +55,7 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
 
 export const metadata = new CommandMetadata(CommandCategory.Utility, new SlashCommandBuilder()
     .setName('terminal')
-    .setDescription('Run a hidden command (usually used as hidden commands and developer tools)')
+    .setDescription('Run a hidden command (usually used for hidden commands or developer tools)')
     .addStringOption(new SlashCommandStringOption()
         .setName('prompt')
         .setDescription('Set the prompt you want to run')
