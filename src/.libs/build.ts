@@ -1,14 +1,17 @@
 import { readdirSync } from 'fs'
+import { join } from 'path'
 
 const findEntrypoints = (src: string, data: string[] = []) => {
     try
     {
-        readdirSync(src).forEach((file) => {
+        const directories = readdirSync(src);
+
+        directories.forEach((file) => {
             if (/([a-z]+\.[a-z]+)$/g.test(`${src}/${file}`))
             {
                 data.push(`${src}/${file}`);
             }
-            else
+            else if (!file.startsWith('.'))
             {
                 findEntrypoints(`${src}/${file}`, data);
             }
@@ -21,7 +24,7 @@ const findEntrypoints = (src: string, data: string[] = []) => {
     return data;
 }
 
-const entrypoints: string[] = findEntrypoints('./src');
+const entrypoints: string[] = findEntrypoints(join(__dirname, '../'));
 
 Bun.build({
     entrypoints,
@@ -61,8 +64,5 @@ Bun.build({
                 });
             }
         }
-    ],
-    define: {
-        // __dirname: JSON.stringify(import.meta.dir)
-    }
+    ]
 });

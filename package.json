@@ -20,5 +20,10 @@
     "fflate": "^0.8.2",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.0"
+  },
+  "scripts": {
+    "build": "bun run src/.libs/build.ts",
+    "dev": "bun --watch --env-file=.env.development build/src/index.js",
+    "prod": "bun --watch build/src/index.js"
   }
 }
