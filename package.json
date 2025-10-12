@@ -15,15 +15,15 @@
     "@discordjs/voice": "^0.18.0",
     "@napi-rs/canvas": "^0.1.80",
     "@types/express": "^5.0.3",
-    "discord-api-types": "^0.38.28",
-    "discord.js": "^14.22.1",
+    "discord-api-types": "^0.38.29",
+    "discord.js": "^14.23.2",
     "fflate": "^0.8.2",
     "mongodb": "^6.20.0",
-    "mongoose": "^8.19.0"
+    "mongoose": "^8.19.1"
   },
   "scripts": {
     "build": "bun run src/.libs/build.ts",
-    "dev": "bun --watch --env-file=.env.development build/src/index.js",
-    "prod": "bun --watch build/src/index.js"
+    "dev": "bun --watch --env-file=.env.development.local build/src/index.js",
+    "prod": "bun --watch --env-file=.env build/src/index.js"
   }
 }
