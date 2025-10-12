@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { channel } from '../config.json'
+import { channel, role } from '../config.json'
 import { IClient } from '../index.ts'
 
 const file = Bun.file(join(__dirname, '../resources/welcome.dat'));
@@ -31,7 +31,10 @@ export default async (oldMember: any, newMember: any) => {
     if (!c) return;
     
     // @ts-ignore
-    const response = await c.send({ embeds: [ embed ] });
+    const response = await c.send({
+        content: `<@${role.welcome}>`,
+        embeds: [ embed ]
+    });
     
     response.react('👋');
 }
