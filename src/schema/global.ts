@@ -1,45 +1,45 @@
-import { Schema } from 'mongoose'
+import { Schema } from "mongoose";
 
 export enum CountingSettings {
-    IsUserStrict   = 1 << 0,
-    IsNumberStrict = 1 << 1
+    IsUserStrict = 1 << 0,
+    IsNumberStrict = 1 << 1,
 }
 
 export default new Schema({
     _id: {
-        type: String
+        type: String,
     },
     counting: {
         value: {
             type: Number,
             min: 0,
-            default: 0
+            default: 0,
         },
         lastUser: {
             type: String,
-            default: null
+            default: null,
         },
         lastTime: {
             type: Date,
-            default: null
+            default: null,
         },
         settings: {
             type: Number,
             min: 0,
-            default: 0
+            default: 0,
         },
         type: Object,
-        default: null
+        default: null,
     },
     canvas: {
         data: {
-        	type: Object,
-        	default: {}
+            type: Object,
+            default: {},
         },
         size: {
             type: Number,
             min: 0,
-            default: 0
-        }
-    }
+            default: 0,
+        },
+    },
 });

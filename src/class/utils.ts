@@ -1,17 +1,23 @@
-import { ButtonBuilder, ButtonStyle, ContainerBuilder, EmbedBuilder, MediaGalleryBuilder, MessageFlags, SeparatorBuilder, TextDisplayBuilder } from 'discord.js'
-import { existsSync } from 'node:fs'
-import { setTimeout as wait } from 'node:timers/promises'
+import {
+    ButtonBuilder,
+    ButtonStyle,
+    ContainerBuilder,
+    EmbedBuilder,
+    MediaGalleryBuilder,
+    MessageFlags,
+    SeparatorBuilder,
+    TextDisplayBuilder,
+} from "discord.js";
+import { setTimeout as wait } from "node:timers/promises";
 
-export default class Utils
-{
-    private readonly _appColor = 0x9B66FF;
+export default class Utils {
+    private readonly _appColor = 0x9b66ff;
 
     /**
      * Gets the default app color.
      * @returns The default app color.
      */
-    getAppColor(): number
-    {
+    getAppColor(): number {
         return this._appColor;
     }
 
@@ -23,23 +29,20 @@ export default class Utils
      * @param disabled Whether the button is disabled or not (defaults to false).
      * @returns The generated button.
      */
-    buttonBuilder(customId: string, label: string, style?: ButtonStyle, disabled: boolean = false)
-    {
+    buttonBuilder(
+        customId: string,
+        label: string,
+        style?: ButtonStyle,
+        disabled: boolean = false,
+    ) {
         const button = new ButtonBuilder()
             .setLabel(label)
             .setDisabled(disabled);
-        
-        if (/^[a-z][a-z0-9+.-]*:\/\/[^\s]+$/i.test(customId))
-        {
-            button
-                .setStyle(ButtonStyle.Link)
-                .setURL(customId);
-        }
-        else
-        {
-            button
-                .setStyle(style ?? ButtonStyle.Primary)
-                .setCustomId(customId);
+
+        if (/^[a-z][a-z0-9+.-]*:\/\/[^\s]+$/i.test(customId)) {
+            button.setStyle(ButtonStyle.Link).setURL(customId);
+        } else {
+            button.setStyle(style ?? ButtonStyle.Primary).setCustomId(customId);
         }
 
         return button;
@@ -50,18 +53,16 @@ export default class Utils
      * @param color The accent color of the container.
      * @returns The constructed container.
      */
-    containerBuilder(color: number | null = null): ContainerBuilder
-    {
-        const container = new ContainerBuilder()
-        
-        if (color !== null)
-        {
+    containerBuilder(color: number | null = null): ContainerBuilder {
+        const container = new ContainerBuilder();
+
+        if (color !== null) {
             container.setAccentColor(color);
         }
 
         return container;
     }
-    
+
     /**
      * Creates an embed with optional title, emoji, and color.
      * @param title The title of the embed.
@@ -69,38 +70,43 @@ export default class Utils
      * @param color The embed color.
      * @returns The constructed embed.
      */
-    embedBuilder(title?: string, emoji?: string, color?: number): EmbedBuilder
-    {
-		if (title !== undefined && emoji !== undefined)
-        {
+    embedBuilder(title?: string, emoji?: string, color?: number): EmbedBuilder {
+        if (title !== undefined && emoji !== undefined) {
             title = `${emoji} • ${title}`;
         }
-        
+
         return new EmbedBuilder()
-        	.setColor(color ?? null)
-        	.setTitle(title ?? null);
+            .setColor(color ?? null)
+            .setTitle(title ?? null);
     }
-    
-    private readonly _embedWarning = this.embedBuilder('Warning', '⚠️', 0xFF9900);
-    
+
+    private readonly _embedWarning = this.embedBuilder(
+        "Warning",
+        "⚠️",
+        0xff9900,
+    );
+
     /**
      * Sends or edits an ephemeral warning message to an interaction.
      * @param interaction The Discord interaction.
      * @param description The warning message description.
      * @returns The interaction response.
      */
-    interactionWarning = async (interaction: any, description: string): Promise<any> => {
-        this._embedWarning
-            .setDescription(description)
-            .setTimestamp();
-        
-        const response = await interaction[(interaction.deferred ? 'editReply' : 'reply')]({
-            embeds: [ this._embedWarning ],
-            flags: MessageFlags.Ephemeral
+    interactionWarning = async (
+        interaction: any,
+        description: string,
+    ): Promise<any> => {
+        this._embedWarning.setDescription(description).setTimestamp();
+
+        const response = await interaction[
+            interaction.deferred ? "editReply" : "reply"
+        ]({
+            embeds: [this._embedWarning],
+            flags: MessageFlags.Ephemeral,
         });
 
         return response;
-    }
+    };
 
     private readonly _uptimeDate = Object.freeze(new Date());
 
@@ -108,14 +114,13 @@ export default class Utils
      * Gets the date when the application was started.
      * @returns The uptime start date.
      */
-    getUptimeDate(): Date
-    {
+    getUptimeDate(): Date {
         return this._uptimeDate;
     }
 
     private readonly _webhookData = Object.freeze({
-        name: 'Phantasia',
-        avatar: 'https://cdn.discordapp.com/attachments/1273919876855103542/1273921643755999272/phantasia.png?ex=66c05f7c&is=66bf0dfc&hm=37a992479acee740705ef73d21e3f113b1ae0aa7d15e0c277119bdf12148246c&'
+        name: "Phantasia",
+        avatar: "https://cdn.discordapp.com/attachments/1273919876855103542/1273921643755999272/phantasia.png?ex=66c05f7c&is=66bf0dfc&hm=37a992479acee740705ef73d21e3f113b1ae0aa7d15e0c277119bdf12148246c&",
     });
 
     /**
@@ -123,12 +128,15 @@ export default class Utils
      * @param interaction The Discord interaction.
      * @returns The webhook.
      */
-    async getWebhook(interaction: any): Promise<any>
-    {
-        let webhook = await interaction.channel.fetchWebhooks()
-            webhook = webhook.find((webhook: any) => (webhook.name === this._webhookData.name));
-	
-        return (webhook ? webhook : await interaction.channel.createWebhook(this._webhookData));
+    async getWebhook(interaction: any): Promise<any> {
+        let webhook = await interaction.channel.fetchWebhooks();
+        webhook = webhook.find(
+            (webhook: any) => webhook.name === this._webhookData.name,
+        );
+
+        return webhook
+            ? webhook
+            : await interaction.channel.createWebhook(this._webhookData);
     }
     /**
      * Clamps a number between a minimum and maximum value.
@@ -137,8 +145,7 @@ export default class Utils
      * @param max The upper bound.
      * @returns The clamped number.
      */
-    clamp(value: number, min: number, max: number): number
-    {
+    clamp(value: number, min: number, max: number): number {
         return Math.min(Math.max(value, min), max);
     }
 
@@ -147,9 +154,8 @@ export default class Utils
      * @param percentage The probability of returning true (0 to 1).
      * @returns Whether the chance succeeded.
      */
-    chance(percentage: number = 0.5): boolean
-    {
-        return (Math.random() < this.clamp(percentage, 0, 1));
+    chance(percentage: number = 0.5): boolean {
+        return Math.random() < this.clamp(percentage, 0, 1);
     }
 
     /**
@@ -157,8 +163,7 @@ export default class Utils
      * @param array The array to choose from.
      * @returns The randomly chosen element.
      */
-    choose(array: string | any[]): any
-    {
+    choose(array: string | any[]): any {
         return array[Math.floor(Math.random() * array.length)];
     }
 
@@ -167,30 +172,30 @@ export default class Utils
      * @param data Array of values with weights.
      * @returns The chosen value and its index.
      */
-    chooseWeight(data: { value: any; weight: number }[]): { value: any; index: number }
-    {
+    chooseWeight(data: { value: any; weight: number }[]): {
+        value: any;
+        index: number;
+    } {
         const totalWeight = data.reduce((sum, v) => sum + v.weight, 0);
         let random = Math.random() * totalWeight;
 
-        for (let i = 0; i < data.length; ++i)
-        {
+        for (let i = 0; i < data.length; ++i) {
             const { value, weight } = data[i];
 
             random -= weight;
-    
-            if (random <= 0)
-            {
+
+            if (random <= 0) {
                 return {
                     value,
-                    index: i
-                }
+                    index: i,
+                };
             }
         }
 
         return {
             value: data[0].value,
-            index: 0
-        }
+            index: 0,
+        };
     }
 
     /**
@@ -198,9 +203,8 @@ export default class Utils
      * @param value The number to format.
      * @returns The formatted number as a string.
      */
-    formatNumber(value: number): string
-    {
-        return (new Intl.NumberFormat().format(Math.floor(value))).toString();
+    formatNumber(value: number): string {
+        return new Intl.NumberFormat().format(Math.floor(value)).toString();
     }
 
     /**
@@ -208,12 +212,11 @@ export default class Utils
      * @param string The string to format.
      * @returns The formatted string.
      */
-    formatTitle(string: string): string
-    {
+    formatTitle(string: string): string {
         return string
-            .split(' ')
+            .split(" ")
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+            .join(" ");
     }
 
     /**
@@ -221,8 +224,7 @@ export default class Utils
      * @param max The maximum value.
      * @returns The generated random number.
      */
-    random(max: number): number
-    {
+    random(max: number): number {
         return Math.random() * max;
     }
 
@@ -232,9 +234,8 @@ export default class Utils
      * @param max The maximum value.
      * @returns The generated random number.
      */
-    randomRange(min: number, max: number): number
-    {
-        return min + (Math.random() * (max - min));
+    randomRange(min: number, max: number): number {
+        return min + Math.random() * (max - min);
     }
 
     /**
@@ -242,12 +243,11 @@ export default class Utils
      * @param seed The seed value.
      * @returns The generated pseudo-random number (0 to 1).
      */
-    randomSeeded(seed: number): number
-    {
+    randomSeeded(seed: number): number {
         seed ^= seed << 13;
         seed ^= seed >> 17;
         seed ^= seed << 5;
-        
+
         return (seed >>> 0) / 0xffff_ffff;
     }
 
@@ -256,8 +256,7 @@ export default class Utils
      * @param time - The time to wait in seconds.
      * @returns Resolves after the wait time.
      */
-    async wait(time: number): Promise<void>
-    {
+    async wait(time: number): Promise<void> {
         return await wait(1000 * time);
     }
 }

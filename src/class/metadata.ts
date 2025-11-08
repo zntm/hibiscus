@@ -1,21 +1,23 @@
-import type { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandGroupBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js'
+import type {
+    SlashCommandBuilder,
+    SlashCommandOptionsOnlyBuilder,
+    SlashCommandSubcommandGroupBuilder,
+    SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
 
-export const enum CommandCategory
-{
-    General = 'General',
-    Fun = 'Fun',
-    Utility = 'Utility'
+export const enum CommandCategory {
+    General = "General",
+    Fun = "Fun",
+    Utility = "Utility",
 }
 
-class Metadata
-{
+class Metadata {
     private _info: any;
 
     /**
      * @param info The metadata information to store.
      */
-    constructor(info: any)
-    {
+    constructor(info: any) {
         this._info = info;
     }
 
@@ -23,14 +25,12 @@ class Metadata
      * Gets the stored metadata information.
      * @returns The stored metadata.
      */
-    getInfo()
-    {
+    getInfo() {
         return this._info;
     }
 }
 
-export class CommandMetadata extends Metadata
-{
+export class CommandMetadata extends Metadata {
     private _category: string;
     private _isDeveloperCommand = false;
 
@@ -38,8 +38,14 @@ export class CommandMetadata extends Metadata
      * @param category The category of the command.
      * @param info The slash command data.
      */
-    constructor(category: CommandCategory, info: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandGroupBuilder | SlashCommandSubcommandsOnlyBuilder)
-    {
+    constructor(
+        category: CommandCategory,
+        info:
+            | SlashCommandBuilder
+            | SlashCommandOptionsOnlyBuilder
+            | SlashCommandSubcommandGroupBuilder
+            | SlashCommandSubcommandsOnlyBuilder,
+    ) {
         super(info);
         this._category = category;
     }
@@ -48,16 +54,14 @@ export class CommandMetadata extends Metadata
      * Gets the category of the command.
      * @returns The command category.
      */
-    getCategory()
-    {
+    getCategory() {
         return this._category;
     }
 
     /**
      * Marks this command as a developer-only command.
      */
-    setIsDeveloperCommand()
-    {
+    setIsDeveloperCommand() {
         this._isDeveloperCommand = true;
     }
 
@@ -65,18 +69,14 @@ export class CommandMetadata extends Metadata
      * Checks if this command is a developer-only command.
      * @returns Whether this command is developer-only.
      */
-    getIsDeveloperCommand()
-    {
+    getIsDeveloperCommand() {
         return this._isDeveloperCommand;
     }
 }
 
-export class ContextMetadata extends Metadata
-{
-}
+export class ContextMetadata extends Metadata {}
 
-export class TerminalMetadata
-{
+export class TerminalMetadata {
     private _channels?: string[];
     private _roles?: string[];
     private _users?: string[];
@@ -88,18 +88,14 @@ export class TerminalMetadata
      * @returns This instance for chaining.
      * @private
      */
-    private _addValue(value: string | string[], type: string)
-    {
+    private _addValue(value: string | string[], type: string) {
         // @ts-ignore
         this[type] ??= [];
 
-        if (Array.isArray(value))
-        {
+        if (Array.isArray(value)) {
             // @ts-ignore
             this[type].push(...value);
-        }
-        else
-        {
+        } else {
             // @ts-ignore
             this[type].push(value);
         }
@@ -114,16 +110,17 @@ export class TerminalMetadata
      * @returns Whether the value exists.
      * @private
      */
-    private _hasValue(value: string | string[], type: string)
-    {
+    private _hasValue(value: string | string[], type: string) {
         // @ts-ignore
-        if (!this[type])
-        {
+        const _ = this[type];
+
+        if (!_) {
             return true;
         }
 
-        // @ts-ignore
-        return (typeof value === 'string' ? this[type].includes(value) : value.some((v) => this[type].includes(v)));
+        return typeof value === "string"
+            ? _.includes(value)
+            : value.some((v) => _.includes(v));
     }
 
     /**
@@ -131,9 +128,8 @@ export class TerminalMetadata
      * @param channel The channel(s) to allow.
      * @returns This instance for chaining.
      */
-    addChannel(channel: string | string[])
-    {
-        return this._addValue(channel, '_channels');
+    addChannel(channel: string | string[]) {
+        return this._addValue(channel, "_channels");
     }
 
     /**
@@ -141,17 +137,15 @@ export class TerminalMetadata
      * @param channel The channel(s) to check.
      * @returns Whether the channel is allowed.
      */
-    hasChannel(channel: string | string[])
-    {
-        return this._hasValue(channel, '_channels');
+    hasChannel(channel: string | string[]) {
+        return this._hasValue(channel, "_channels");
     }
 
     /**
      * Gets the list of allowed channels.
      * @returns The allowed channels.
      */
-    getChannels()
-    {
+    getChannels() {
         return this._channels;
     }
 
@@ -160,9 +154,8 @@ export class TerminalMetadata
      * @param role The role(s) to allow.
      * @returns This instance for chaining.
      */
-    addRole(role: string | string[])
-    {
-        return this._addValue(role, '_roles');
+    addRole(role: string | string[]) {
+        return this._addValue(role, "_roles");
     }
 
     /**
@@ -170,17 +163,15 @@ export class TerminalMetadata
      * @param role The role(s) to check.
      * @returns Whether the role is allowed.
      */
-    hasRole(role: string | string[])
-    {
-        return this._hasValue(role, '_roles');
+    hasRole(role: string | string[]) {
+        return this._hasValue(role, "_roles");
     }
 
     /**
      * Gets the list of allowed roles.
      * @returns The allowed roles.
      */
-    getRoles()
-    {
+    getRoles() {
         return this._roles;
     }
 
@@ -189,9 +180,8 @@ export class TerminalMetadata
      * @param user The user(s) to allow.
      * @returns This instance for chaining.
      */
-    addUser(user: string | string[])
-    {
-        return this._addValue(user, '_users');
+    addUser(user: string | string[]) {
+        return this._addValue(user, "_users");
     }
 
     /**
@@ -199,17 +189,15 @@ export class TerminalMetadata
      * @param user The user(s) to check.
      * @returns Whether the user is allowed.
      */
-    hasUser(user: string | string[])
-    {
-        return this._hasValue(user, '_user');
+    hasUser(user: string | string[]) {
+        return this._hasValue(user, "_user");
     }
 
     /**
      * Gets the list of allowed users.
      * @returns The allowed users.
      */
-    getUsers()
-    {
+    getUsers() {
         return this._users;
     }
 }

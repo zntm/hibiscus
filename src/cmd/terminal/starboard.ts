@@ -1,38 +1,46 @@
-import { Attachment, ChatInputCommandInteraction, TextChannel } from 'discord.js'
+import {
+    Attachment,
+    ChatInputCommandInteraction,
+    TextChannel,
+} from "discord.js";
 
-import { channel } from '../../config.json'
-import { IClient } from '../../index.ts'
-import { TerminalMetadata } from '../../class/metadata.ts'
+import { channel } from "../../config.json";
+import { IClient } from "../../index.ts";
+import { TerminalMetadata } from "../../class/metadata.ts";
 
 const starboardData: any = {
     tier1: {
-        name: 'Tier 1',
-        emoji: '',
-        color: 0x000000
+        name: "Tier 1",
+        emoji: "",
+        color: 0x000000,
     },
     tier2: {
-        name: 'Tier 2',
-        emoji: '',
-        color: 0x000000
+        name: "Tier 2",
+        emoji: "",
+        color: 0x000000,
     },
     tier3: {
-        name: 'Tier 3',
-        emoji: '',
-        color: 0x000000
-    }
-}
+        name: "Tier 3",
+        emoji: "",
+        color: 0x000000,
+    },
+};
 
-export const run = async (interaction: ChatInputCommandInteraction, client: IClient, args: string[], attachment: Attachment) => {
-    const [ messageId, rating ] = args;
+export const run = async (
+    interaction: ChatInputCommandInteraction,
+    client: IClient,
+    args: string[],
+    attachment: Attachment,
+) => {
+    const [messageId, rating] = args;
 
     const m = await interaction.channel?.messages.fetch(messageId);
 
     if (!m) return;
-    
+
     const c = await client.channels.fetch(channel.starboard);
 
-    if (c instanceof TextChannel)
-    {
+    if (c instanceof TextChannel) {
         let { starboard } = (await client.db.user.find(m?.author.id))[0] ?? {};
 
         starboard[rating] = (starboard[rating] ?? 0) + 1;
@@ -41,20 +49,22 @@ export const run = async (interaction: ChatInputCommandInteraction, client: ICli
 
         const data = starboardData[rating];
 
-        const lastLetter = m.author.displayName.charAt(m.author.displayName.length - 1);
-        const suffix = ([ 's', 'x', 'z' ].includes(lastLetter) ? lastLetter : '');
+        const lastLetter = m.author.displayName.charAt(
+            m.author.displayName.length - 1,
+        );
+        const suffix = ["s", "x", "z"].includes(lastLetter) ? lastLetter : "";
 
-        const embed = client.utils.embedBuilder('Starboard', data.emoji, data.color)
+        const embed = client.utils
+            .embedBuilder("Starboard", data.emoji, data.color)
             .setDescription(
                 `<@${m?.author.id}>'${suffix} content has been added to the starboard!\n\n` +
-                `https://discord.com/channels/${interaction.guild?.id}/${interaction.channel?.id}/${messageId}`
+                    `https://discord.com/channels/${interaction.guild?.id}/${interaction.channel?.id}/${messageId}`,
             )
             .setImage(m.attachments.first()?.url ?? null)
             .setTimestamp();
 
-        c.send({ embeds: [ embed ] });
+        c.send({ embeds: [embed] });
     }
-}
+};
 
-export const metadata = new TerminalMetadata()
-    .addUser('805697813908160512');
+export const metadata = new TerminalMetadata().addUser("805697813908160512");

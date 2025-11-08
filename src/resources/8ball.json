@@ -3,20 +3,12 @@
         {
             "text": "Absolutely",
             "editNegative": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         {
             "text": "Absolutely not",
             "editPositive": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         {
             "text": "As I see it, no.",
@@ -40,12 +32,7 @@
         "idk",
         {
             "text": "Likely",
-            "suffix": [
-                ".",
-                "...",
-                "?",
-                "!"
-            ]
+            "suffix": [".", "...", "?", "!"]
         },
         "In your dreams.",
         "It's a possibility.",
@@ -57,20 +44,12 @@
         {
             "text": "No",
             "editPositive": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         {
             "text": "Nope",
             "editPositive": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         "Not sure.",
         "Only time will tell.",
@@ -85,46 +64,28 @@
         "That's gonna be a yikes from me.",
         {
             "text": "The odds aren't in your favor",
-            "suffix": [
-                ".",
-                "..."
-            ]
-		},
+            "suffix": [".", "..."]
+        },
         {
             "text": "The signs are unclear",
-            "suffix": [
-                ".",
-                "..."
-            ]
+            "suffix": [".", "..."]
         },
         {
             "text": "The signs point to no",
             "editPositive": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         {
             "text": "The signs point to yes",
             "editNegative": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         "Try shaking me again, maybe you'll get a different answer.",
         "Uhhh...",
         {
             "text": "Unlikely",
             "editNegative": true,
-            "suffix": [
-                ".",
-                "...",
-                "?"
-            ]
+            "suffix": [".", "...", "?"]
         },
         "Unsure.",
         "Well...",
@@ -132,20 +93,12 @@
         {
             "text": "Yep",
             "editNegative": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         {
             "text": "Yes",
             "editNegative": true,
-            "suffix": [
-                ".",
-                "...",
-                "!"
-            ]
+            "suffix": [".", "...", "!"]
         },
         "You're barking up the wrong tree."
     ],
