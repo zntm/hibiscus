@@ -48,14 +48,16 @@ export const run = async (
 
     const fileData: any = {};
 
-    Object.entries(zipContent).forEach(([rawName, u8]) => {
-        if (!rawName.endsWith("/")) {
-            const name = rawName.replaceAll("\0", "").trim();
-            const buffer = Buffer.from(u8);
+    for (const content of Object.entries(zipContent)) {
+        const n = content[0];
+
+        if (!n.endsWith("/")) {
+            const name = n.replaceAll("\0", "").trim();
+            const buffer = Buffer.from(content[1]);
 
             fileData[name] = { name, buffer };
         }
-    });
+    }
 
     const components: ContainerBuilder[] = [];
 
@@ -63,72 +65,63 @@ export const run = async (
         (fileData["data.yml"] ?? fileData["data.yaml"]).buffer.toString("utf8"),
     );
 
-    data.forEach(({ color, content }: any) => {
+    for (const { color, content } of data) {
         const container = client.utils.containerBuilder(
             color ? HEX2DEC(color) : null,
         );
 
-        content?.forEach(({ type, value }: any) => {
-            switch (type) {
-                case "file":
-                    const file = new FileBuilder()
-                        .setSpoiler(value?.spoiler ?? false)
-                        .setURL(`attachment://a_${value.url}`);
+        for (const { type, value } of content) {
+            if (type === "file") {
+                const file = new FileBuilder()
+                    .setSpoiler(value?.spoiler ?? false)
+                    .setURL(`attachment://a_${value.url}`);
 
-                    container.addFileComponents(file);
-                    break;
+                container.addFileComponents(file);
+            } else if (type === "image") {
+                const media = new MediaGalleryBuilder();
 
-                case "image":
-                    const media = new MediaGalleryBuilder();
+                for (const v of value) {
+                    const item = new MediaGalleryItemBuilder()
+                        .setSpoiler(v?.spoiler ?? false)
+                        .setURL(`attachment://a_${v.url}`);
 
-                    value.forEach((v: any) => {
-                        const item = new MediaGalleryItemBuilder()
-                            .setSpoiler(v?.spoiler ?? false)
-                            .setURL(`attachment://a_${v.url}`);
-
-                        if (v?.description) {
-                            item.setDescription(v.description);
-                        }
-
-                        media.addItems(item);
-                    });
-
-                    container.addMediaGalleryComponents(media);
-                    break;
-
-                case "separator":
-                    if (value === "large") {
-                        container.addSeparatorComponents(separatorData.large);
-                    } else if (value === "small") {
-                        container.addSeparatorComponents(separatorData.small);
+                    if (v?.description) {
+                        item.setDescription(v.description);
                     }
-                    break;
 
-                case "text":
-                    const text = new TextDisplayBuilder().setContent(value);
+                    media.addItems(item);
+                }
 
-                    container.addTextDisplayComponents(text);
-                    break;
+                container.addMediaGalleryComponents(media);
+            } else if (type === "separator") {
+                if (value === "large") {
+                    container.addSeparatorComponents(separatorData.large);
+                } else if (value === "small") {
+                    container.addSeparatorComponents(separatorData.small);
+                }
+            } else if (type === "text") {
+                const text = new TextDisplayBuilder().setContent(value);
 
-                case "url":
-                    const components =
-                        new ActionRowBuilder<ButtonBuilder>().addComponents(
-                            value.map(({ label, url }: any) =>
-                                client.utils.buttonBuilder(url, label),
-                            ),
-                        );
+                container.addTextDisplayComponents(text);
+            } else if (type === "url") {
+                const components =
+                    new ActionRowBuilder<ButtonBuilder>().addComponents(
+                        value.map(({ label, url }: any) =>
+                            client.utils.buttonBuilder(url, label),
+                        ),
+                    );
 
-                    container.addActionRowComponents(components);
-                    break;
+                container.addActionRowComponents(components);
             }
-        });
+        }
 
         components.push(container);
-    });
+    }
 
     const channel = await interaction.guild?.channels.fetch(
         "1405116743361499256",
     );
+
     const files = Object.values(fileData)
         .filter((f: any) => f.name.startsWith("resources/"))
         .map((f: any) =>

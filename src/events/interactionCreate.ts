@@ -19,9 +19,6 @@ export default (interaction: any) => {
         );
     }
 
-    console.log(interaction.commandName);
-    console.log(interaction.client.commands.get(interaction.commandName));
-
     if (
         interaction.isChatInputCommand() ||
         interaction.isUserContextMenuCommand()

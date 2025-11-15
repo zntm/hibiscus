@@ -1,2 +1,2 @@
 // @bun
-var __require=import.meta.require;var welcome_default="./welcome.dat";export{welcome_default as default};
+var r="./welcome.dat";export{r as default};

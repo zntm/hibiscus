@@ -35,7 +35,9 @@ const getIndex = (x: number, y: number, size: number) => {
 const compressCanvasData = (canvasData: string[]) => {
     const data: any = {};
 
-    Object.keys(colorData).forEach((i: string) => (data[i] = []));
+    for (const i of Object.keys(colorData)) {
+        data[i] = [];
+    }
 
     for (let i = 0; i < canvasData.length; ) {
         let id = canvasData[i];
@@ -63,16 +65,17 @@ const compressCanvasData = (canvasData: string[]) => {
 const decompressCanvasData = (canvasData: any) => {
     const data = new Array(Canvas.Size ** 2).fill(undefined);
 
-    Object.entries(canvasData).forEach(([name, value]: any) => {
-        value.forEach((packed: number) => {
+    for (const [name, value] of Object.entries(canvasData)) {
+        // @ts-ignore
+        for (const packed of value) {
             const index = packed & 0xffff;
             const length = (packed >> 16) & 0xffff;
 
             for (let i = 0; i < length; ++i) {
                 data[index + i] = name;
             }
-        });
-    });
+        }
+    }
 
     return data;
 };

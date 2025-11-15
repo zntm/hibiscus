@@ -14,11 +14,10 @@ export const run = async (
     args: string[],
     attachment: Attachment,
 ) => {
-    args.forEach(async (i) => {
+    for (const i of args) {
         const dir = join(__dirname, `../../resources/guide/${i}.json`);
 
-        const file = Bun.file(dir);
-        const { data } = await file.json();
+        const { data } = await Bun.file(dir).json();
 
         for (let { title, emoji, color, description, image } of data) {
             if (color !== undefined) {
@@ -53,7 +52,7 @@ export const run = async (
                 await interaction.channel?.send({ embeds: [embed] });
             }
         }
-    });
+    }
 };
 
 export const metadata = new TerminalMetadata().addUser("805697813908160512");

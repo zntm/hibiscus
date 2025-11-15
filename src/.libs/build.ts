@@ -2,17 +2,17 @@ import { readdirSync } from "fs";
 import { join } from "path";
 
 const findEntrypoints = (src: string, data: string[] = []) => {
-    try {
-        const directories = readdirSync(src);
+    const directories = readdirSync(src);
 
-        directories.forEach((file) => {
-            if (/([a-z]+\.[a-z]+)/g.test(`${src}/${file}`)) {
-                data.push(`${src}/${file}`);
-            } else if (!file.startsWith(".")) {
-                findEntrypoints(`${src}/${file}`, data);
-            }
-        });
-    } catch {}
+    for (const file of directories) {
+        const filePath = `${src}/${file}`;
+
+        if (/([a-z]+\.[a-z]+)/g.test(filePath)) {
+            data.push(filePath);
+        } else if (!file.startsWith(".")) {
+            findEntrypoints(`${src}/${file}`, data);
+        }
+    }
 
     return data;
 };
@@ -26,7 +26,7 @@ Bun.build({
     format: "esm",
     minify: {
         whitespace: true,
-        identifiers: false,
+        identifiers: true,
         syntax: true,
         keepNames: true,
     },
@@ -44,17 +44,23 @@ Bun.build({
                 build.onLoad({ filter: /\.ts$/ }, async (args) => {
                     let contents = await Bun.file(args.path).text();
 
-                    ["json", "ts"].forEach((ext) => {
-                        contents
-                            .match(new RegExp(`\\.(${ext})\\"`, "g"))
-                            // ?.filter((path) => !path.includes("resources"))
-                            ?.forEach((i) => {
-                                contents = contents.replace(i, '.js"');
-                            });
-                    });
+                    for (const ext of ["json", "ts"]) {
+                        const regex = new RegExp(`\\.(${ext})\\"`, "g");
 
-                    contents =
-                        "const __dirname = import.meta.dirname;\n" + contents;
+                        const matches = contents.match(regex);
+
+                        if (matches) {
+                            for (const match of matches) {
+                                contents = contents.replace(match, '.js"');
+                            }
+                        }
+                    }
+
+                    if (contents.includes("__dirname")) {
+                        contents =
+                            "const __dirname = import.meta.dirname;\n" +
+                            contents;
+                    }
 
                     return {
                         contents,

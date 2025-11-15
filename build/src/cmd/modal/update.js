@@ -1,5 +1,5 @@
 // @bun
-var __require=import.meta.require;import{ActionRowBuilder,ButtonBuilder,ButtonStyle}from"discord.js";var embedColor={catharsis:12520779,leap_of_faith:12520779,phantasia:12520779,ruins:12520779},run=async(interaction,client)=>{let name=interaction.fields.getTextInputValue("name")??null,color=embedColor[name];if(color===void 0)return;let version=interaction.fields.getTextInputValue("version")??null,emoji=interaction.fields.getTextInputValue("emoji")??null,description=`A new version has been released!
-`+interaction.fields.getTextInputValue("changes").replaceAll("\r","").split(`
-`).map((i)=>`- ${i.trim()}`).join(`
-`),embed=client.utils.embedBuilder(`${name} - ${version}`,emoji,color).setDescription(description),button=new ButtonBuilder().setURL(interaction.fields.getTextInputValue("url")).setLabel("See Changelog").setStyle(ButtonStyle.Link),row=new ActionRowBuilder().addComponents(button);await interaction.reply({embeds:[embed],components:[row]})};export{run};
+import{ActionRowBuilder as m,ButtonBuilder as p,ButtonStyle as b}from"discord.js";var c={catharsis:12520779,leap_of_faith:12520779,phantasia:12520779,ruins:12520779},g=async(e,l)=>{let t=e.fields.getTextInputValue("name")??null,n=c[t];if(n===void 0)return;let o=e.fields.getTextInputValue("version")??null,s=e.fields.getTextInputValue("emoji")??null,i=`A new version has been released!
+`+e.fields.getTextInputValue("changes").replaceAll("\r","").split(`
+`).map((d)=>`- ${d.trim()}`).join(`
+`),u=l.utils.embedBuilder(`${t} - ${o}`,s,n).setDescription(i),r=new p().setURL(e.fields.getTextInputValue("url")).setLabel("See Changelog").setStyle(b.Link),a=new m().addComponents(r);await e.reply({embeds:[u],components:[a]})};export{g as run};

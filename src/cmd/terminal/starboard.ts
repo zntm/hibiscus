@@ -40,31 +40,32 @@ export const run = async (
 
     const c = await client.channels.fetch(channel.starboard);
 
-    if (c instanceof TextChannel) {
-        let { starboard } = (await client.db.user.find(m?.author.id))[0] ?? {};
+    if (!(c instanceof TextChannel)) return;
 
-        starboard[rating] = (starboard[rating] ?? 0) + 1;
+    let { starboard } = (await client.db.user.find(m?.author.id))[0] ?? {};
 
-        await client.db.user.update(m?.author.id, { starboard });
+    starboard[rating] = (starboard[rating] ?? 0) + 1;
 
-        const data = starboardData[rating];
+    await client.db.user.update(m?.author.id, { starboard });
 
-        const lastLetter = m.author.displayName.charAt(
-            m.author.displayName.length - 1,
-        );
-        const suffix = ["s", "x", "z"].includes(lastLetter) ? lastLetter : "";
+    const data = starboardData[rating];
 
-        const embed = client.utils
-            .embedBuilder("Starboard", data.emoji, data.color)
-            .setDescription(
-                `<@${m?.author.id}>'${suffix} content has been added to the starboard!\n\n` +
-                    `https://discord.com/channels/${interaction.guild?.id}/${interaction.channel?.id}/${messageId}`,
-            )
-            .setImage(m.attachments.first()?.url ?? null)
-            .setTimestamp();
+    const lastLetter = m.author.displayName.charAt(
+        m.author.displayName.length - 1,
+    );
 
-        c.send({ embeds: [embed] });
-    }
+    const suffix = ["s", "x", "z"].includes(lastLetter) ? lastLetter : "";
+
+    const embed = client.utils
+        .embedBuilder("Starboard", data.emoji, data.color)
+        .setDescription(
+            `<@${m?.author.id}>'${suffix} content has been added to the starboard!\n\n` +
+                `https://discord.com/channels/${interaction.guild?.id}/${interaction.channel?.id}/${messageId}`,
+        )
+        .setImage(m.attachments.first()?.url ?? null)
+        .setTimestamp();
+
+    c.send({ embeds: [embed] });
 };
 
 export const metadata = new TerminalMetadata().addUser("805697813908160512");

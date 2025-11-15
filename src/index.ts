@@ -16,6 +16,7 @@ import { setInterval } from "node:timers";
 
 import Utils from "./class/utils.ts";
 import Model from "./class/mongoose.ts";
+import { read } from "node:fs";
 
 interface IClient extends Client {
     commands: Collection<string, any>;
@@ -45,54 +46,45 @@ client.utils = new Utils();
 
 const body: SlashCommandBuilder[] = [];
 
-const loadCommands = async (type: string, push: boolean): Promise<void> => {
-    const files = readdirSync(join(__dirname, `./${type}`)).filter((file) =>
-        file.endsWith(".ts"),
-    );
+const loadFiles = async (type: string, func: any) => {
+    console.log(`Loading files from: ${type}...`);
 
-    for (const file of files) {
+    for (const file of readdirSync(join(__dirname, `./${type}`)).filter(
+        (file) => file.endsWith(".ts"),
+    )) {
+        console.log(`Loading ${file}...`);
+
         const command = await import(`./${type}/${file}`);
         const name = file.slice(0, -3);
 
+        func(name, command?.default ?? command);
+    }
+};
+
+const loadCommandsPush = (type: string) =>
+    loadFiles(type, (name: string, command: any) => {
         client.commands.set(name, command);
 
-        if (push) {
-            const info = command.metadata.getInfo();
-            body.push(info);
-        }
-    }
-};
+        body.push(command.metadata.getInfo());
+    });
 
-const loadEvents = async (): Promise<void> => {
-    const files = readdirSync(join(__dirname, "./events")).filter((file) =>
-        file.endsWith(".ts"),
+const loadCommands = (type: string) =>
+    loadFiles(type, (name: string, command: any) => client.commands.set);
+
+const loadEvents = () =>
+    loadFiles("events", (name: string, command: any) =>
+        client.on(name, command),
     );
 
-    for (const file of files) {
-        const { default: event } = await import(`./events/${file}`);
-        const eventName = file.slice(0, -3);
-
-        client.on(eventName, event);
-    }
-};
-
-const loadSchemas = async (): Promise<void> => {
-    const files = readdirSync(join(__dirname, "./schema")).filter((file) =>
-        file.endsWith(".ts"),
+const loadSchemas = () =>
+    loadFiles(
+        "schema",
+        (name: string, command: any) => (name: string, command: any) =>
+            (client.db[name] = new Model(name, command)),
     );
-
-    for (const file of files) {
-        const schema = await import(`./schema/${file}`);
-        const name = file.slice(0, -3);
-
-        client.db[name] = new Model(name, schema.default);
-    }
-};
 
 const activities = ["Catharsis", "Leap of Faith", "Phantasia", "Ruins"];
-
-let activityIndex =
-    Math.floor(client.utils.getUptimeDate().getTime()) % activities.length;
+let activityIndex = Math.floor(Math.random() * activities.length);
 
 const updateActivity = (client: IClient): void => {
     client.user.setActivity({
@@ -104,12 +96,10 @@ const updateActivity = (client: IClient): void => {
 };
 
 client.on(Events.ClientReady, async () => {
-    console.log("LOADING");
-
     await Promise.all([
-        loadCommands("cmd", true),
-        loadCommands("ctx", true),
-        loadCommands("cmd/modal", false),
+        loadCommandsPush("cmd"),
+        loadCommandsPush("ctx"),
+        loadCommands("cmd/modal"),
         loadEvents(),
         loadSchemas(),
     ]);
@@ -130,8 +120,9 @@ client.on(Events.ClientReady, async () => {
 
 client.login(Bun.env?.DISCORD_TOKEN);
 
-process.on("uncaughtException", console.error);
-process.on("unhandledRejection", console.error);
+process
+    .on("uncaughtException", console.error)
+    .on("unhandledRejection", console.error);
 
 export { client };
 export type { IClient };

@@ -36,32 +36,36 @@ const colors = (
     .split("\n")
     .filter((i: string) => i !== "")
     .map((i: string) => {
-        const [name, color]: any = i.split(",");
-        const decimal = parseInt(color, 16);
+        const [name, color] = i.split(",");
 
         return {
             name,
-            r: (decimal >> 0) & 0xff,
-            g: (decimal >> 8) & 0xff,
-            b: (decimal >> 16) & 0xff,
+            decimal: parseInt(color, 16),
         };
     });
 
-const nearestColor = (r: number, g: number, b: number): string => {
+const nearestColorName = (r: number, g: number, b: number): string => {
     let name = "";
     let minDistance = 255 ** 2 * 3 + 1;
 
-    colors.forEach(
-        ({ name: currentName, r: currentR, g: currentG, b: currentB }) => {
-            const distance =
-                (r - currentR) ** 2 + (g - currentG) ** 2 + (b - currentB) ** 2;
+    for (const c of colors) {
+        const decimal = c.decimal;
 
-            if (minDistance > distance) {
-                name = currentName;
-                minDistance = distance;
+        const dr = r - ((decimal >> 0) & 0xff);
+        const dg = g - ((decimal >> 8) & 0xff);
+        const db = b - ((decimal >> 16) & 0xff);
+
+        const distance = dr * dr + dg * dg + db * db;
+
+        if (distance < minDistance) {
+            name = c.name;
+            minDistance = distance;
+
+            if (distance === 0) {
+                return name;
             }
-        },
-    );
+        }
+    }
 
     return name;
 };
@@ -203,8 +207,7 @@ export const run = async (
         .embedBuilder("Color", "🎨", (r << 16) | (g << 8) | b)
         .setThumbnail(`attachment://thumbnail.png`)
         .setDescription(
-            // @ts-ignore
-            `Closest Name 〃 ${nearestColor(decimal)}\n` +
+            `Closest Name 〃 ${nearestColorName(r, g, b)}\n` +
                 `Hex 〃 ${hex.toUpperCase()}\n` +
                 `RGB 〃 ${r}, ${g}, ${b}\n` +
                 `HSV 〃 ${h}, ${s}, ${v}\n` +

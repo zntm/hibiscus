@@ -14,11 +14,9 @@ import { CommandCategory, CommandMetadata } from "../class/metadata.ts";
 
 const subcommandData: Map<string, any> = new Map();
 
-readdirSync(join(__dirname, "./terminal")).forEach(async (file: string) => {
-    const key = file.slice(0, -3);
-
-    subcommandData.set(key, await import(`./terminal/${file}`));
-});
+for (const file of readdirSync(join(__dirname, "./terminal"))) {
+    subcommandData.set(file.slice(0, -3), await import(`./terminal/${file}`));
+}
 
 export const run = async (
     interaction: ChatInputCommandInteraction,
