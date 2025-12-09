@@ -16,7 +16,6 @@ import { setInterval } from "node:timers";
 
 import Utils from "./class/utils.ts";
 import Model from "./class/mongoose.ts";
-import { read } from "node:fs";
 
 interface IClient extends Client {
     commands: Collection<string, any>;
@@ -49,16 +48,20 @@ const body: SlashCommandBuilder[] = [];
 const loadFiles = async (type: string, func: any) => {
     console.log(`Loading files from: ${type}...`);
 
-    for (const file of readdirSync(join(__dirname, `./${type}`)).filter(
-        (file) => file.endsWith(".ts"),
-    )) {
-        console.log(`Loading ${file}...`);
+    const files = readdirSync(join(__dirname, `./${type}`)).filter((file) =>
+        file.endsWith(".ts"),
+    );
 
-        const command = await import(`./${type}/${file}`);
-        const name = file.slice(0, -3);
+    await Promise.all(
+        files.map(async (file) => {
+            console.log(`Loading ${file}...`);
 
-        func(name, command?.default ?? command);
-    }
+            const command = await import(`./${type}/${file}`);
+            const name = file.slice(0, -3);
+
+            return func(name, command?.default ?? command);
+        }),
+    );
 };
 
 const loadCommandsPush = (type: string) =>
@@ -79,7 +82,7 @@ const loadEvents = () =>
 const loadSchemas = () =>
     loadFiles(
         "schema",
-        (name: string, command: any) => (name: string, command: any) =>
+        (name: string, command: any) =>
             (client.db[name] = new Model(name, command)),
     );
 
@@ -103,6 +106,8 @@ client.on(Events.ClientReady, async () => {
         loadEvents(),
         loadSchemas(),
     ]);
+
+    console.log(client.db);
 
     console.log(`${client.user.username} is online!`);
 

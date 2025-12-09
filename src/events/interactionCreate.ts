@@ -4,10 +4,10 @@ const runCommand = (interaction: any, id: string, error: string) => {
     interaction.client.commands
         .get(id)
         ?.run(interaction, interaction.client)
-        ?.catch(() => {
+        ?.catch((e) => {
             interaction.client.utils.interactionWarning(interaction, error);
 
-            console.error(error);
+            console.error(e);
         });
 };
 

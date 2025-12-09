@@ -15,8 +15,11 @@ const toggleSetting = async (
     if (option === "1" || option === "true") {
         await interaction.deferReply();
 
-        const counting = (await client.db.global.find(interaction.guild?.id))[0]
-            ?.counting;
+        const counting = (
+            await client.db.global.findOne(interaction.guild?.id, {
+                counting: 1,
+            })
+        )?.counting;
         counting.settings ??= 0;
 
         counting.settings |= boolean;
@@ -35,8 +38,11 @@ const toggleSetting = async (
     } else if (option === "0" || option === "false") {
         await interaction.deferReply();
 
-        const counting = (await client.db.global.find(interaction.guild?.id))[0]
-            ?.counting;
+        const counting = (
+            await client.db.global.findOne(interaction.guild?.id, {
+                counting: 1,
+            })
+        )?.counting;
         counting.settings ??= 0;
 
         if (counting.settings & boolean) {
@@ -82,8 +88,10 @@ export const run = async (
             await interaction.deferReply();
 
             const counting = (
-                await client.db.global.find(interaction.guild?.id)
-            )[0]?.counting;
+                await client.db.global.findOne(interaction.guild?.id, {
+                    counting: 1,
+                })
+            )?.counting;
 
             counting.number = number;
             counting.lastUpdate = new Date().getTime();

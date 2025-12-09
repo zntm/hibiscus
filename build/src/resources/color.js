@@ -1,2 +1,2 @@
 // @bun
-var r="./color.dic";export{r as default};
+var n="./color.dic";export{n as default};

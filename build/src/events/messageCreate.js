@@ -1,2 +1,2 @@
 // @bun
-import{readdirSync as a}from"fs";import{join as m}from"path";var e=import.meta.dirname,s=a(m(e,"../message")).filter((n)=>n.endsWith(".js")).map((n)=>import.meta.require(`../message/${n}`)),f=(n)=>{let t=n.channel.id,i=n.author.id;for(let{run:o,info:r}of s)if(r.hasUser(i)&&r.hasChannel(t)){o(n,n.client);return}};export{f as default};
+import{readdirSync as e}from"fs";import{join as d}from"path";var a=import.meta.dirname,m=e(d(a,"../message")).filter((n)=>n.endsWith(".js")).map((n)=>import.meta.require(`../message/${n}`)),f=(n)=>{let r=n.channel.id,i=n.author.id;for(let{run:o,metadata:t}of m)if(t.hasUser(i)&&t.hasChannel(r)){o(n,n.client,n.content.split(" "));return}};export{f as default};

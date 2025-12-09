@@ -13,13 +13,13 @@
         "@atproto/api": "^0.16.11",
         "@discordjs/rest": "^2.6.0",
         "@discordjs/voice": "^0.18.0",
-        "@napi-rs/canvas": "^0.1.81",
-        "@types/express": "^5.0.5",
-        "discord-api-types": "^0.38.32",
-        "discord.js": "^14.24.2",
+        "@napi-rs/canvas": "^0.1.84",
+        "@types/express": "^5.0.6",
+        "discord-api-types": "^0.38.36",
+        "discord.js": "^14.25.1",
         "fflate": "^0.8.2",
-        "mongodb": "^6.20.0",
-        "mongoose": "^8.19.3"
+        "mongodb": "^6.21.0",
+        "mongoose": "^8.20.2"
     },
     "scripts": {
         "build": "bun run src/.libs/build.ts",

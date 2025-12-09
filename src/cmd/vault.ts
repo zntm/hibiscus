@@ -51,6 +51,8 @@ const responseError = [
     "You're not alone. But you're not with anyone, either.",
 ];
 
+let vaultData: any = null;
+
 export const run = async (
     interaction: ChatInputCommandInteraction,
     client: IClient,
@@ -59,8 +61,11 @@ export const run = async (
 
     const prompt = interaction.options.getString("prompt") ?? "";
 
-    const file = Bun.file(join(__dirname, "../.res/vault.json"));
-    const json = await file.json();
+    if (!vaultData) {
+        const file = Bun.file(join(__dirname, "../.res/vault.json"));
+        vaultData = await file.json();
+    }
+    const json = vaultData;
 
     client.utils.wait(1_000 * 5);
 

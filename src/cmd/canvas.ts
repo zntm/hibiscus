@@ -22,8 +22,15 @@ const enum Canvas {
 
 import colorData from "../resources/canvas.json";
 
-const canvas = createCanvas(Canvas.ImageSize, Canvas.ImageSize);
-const context = canvas.getContext("2d");
+const colorPalette: Map<string, [number, number, number]> = new Map();
+
+for (const [key, { hex }] of Object.entries(colorData)) {
+    colorPalette.set(key, [
+        parseInt(hex.slice(1, 3), 16),
+        parseInt(hex.slice(3, 5), 16),
+        parseInt(hex.slice(5, 7), 16),
+    ]);
+}
 
 const getIndex = (x: number, y: number, size: number) => {
     x = ((x % size) + size) % size;
@@ -69,7 +76,7 @@ const decompressCanvasData = (canvasData: any) => {
         // @ts-ignore
         for (const packed of value) {
             const index = packed & 0xffff;
-            const length = (packed >> 16) & 0xffff;
+            const length = (packed >>> 16) & 0xffff;
 
             for (let i = 0; i < length; ++i) {
                 data[index + i] = name;
@@ -123,8 +130,11 @@ export const run = async (
         }
     }
 
-    const canvasData = (await client.db.global.find(interaction.guild?.id))[0]
-        ?.canvas;
+    const canvasData = (
+        await client.db.global.findOne(interaction.guild?.id, {
+            canvas: 1,
+        })
+    )?.canvas;
 
     if (canvasData) {
         canvasData.data = decompressCanvasData(canvasData.data);
@@ -185,30 +195,48 @@ export const run = async (
         });
     }
 
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, Canvas.ImageSize, Canvas.ImageSize);
+    const canvas = createCanvas(Canvas.ImageSize, Canvas.ImageSize);
+    const context = canvas.getContext("2d");
+
+    const imageData = context.createImageData(
+        Canvas.ImageSize,
+        Canvas.ImageSize,
+    );
+    const { data } = imageData;
+
+    data.fill(255);
 
     for (let x = 0; x < Canvas.Size; ++x) {
         for (let y = 0; y < Canvas.Size; ++y) {
-            const color = canvasData.data[getIndex(x, y, Canvas.Size)];
+            const colorName = canvasData.data[getIndex(x, y, Canvas.Size)];
 
-            if (color === undefined) continue;
+            if (colorName === undefined) continue;
 
-            // @ts-ignore
-            const hex = colorData[color]?.hex;
+            const rgb = colorPalette.get(colorName);
 
-            if (hex === "#ffffff") continue;
+            if (!rgb) continue;
 
-            // @ts-ignore
-            context.fillStyle = hex;
-            context.fillRect(
-                x * Canvas.PixelSize,
-                y * Canvas.PixelSize,
-                Canvas.PixelSize,
-                Canvas.PixelSize,
-            );
+            const [r, g, b] = rgb;
+
+            if (r === 255 && g === 255 && b === 255) continue;
+
+            const startX = x * Canvas.PixelSize;
+            const startY = y * Canvas.PixelSize;
+
+            for (let py = 0; py < Canvas.PixelSize; ++py) {
+                const rowOffset = (startY + py) * Canvas.ImageSize * 4;
+                for (let px = 0; px < Canvas.PixelSize; ++px) {
+                    const idx = rowOffset + (startX + px) * 4;
+
+                    data[idx] = r;
+                    data[idx + 1] = g;
+                    data[idx + 2] = b;
+                }
+            }
         }
     }
+
+    context.putImageData(imageData, 0, 0);
 
     const attachment = new AttachmentBuilder(
         await canvas.encode("png"),

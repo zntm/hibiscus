@@ -1,3 +1,4 @@
+import { ButtonStyle } from "discord.js";
 import mongoose from "mongoose";
 
 // @ts-ignore
@@ -71,7 +72,14 @@ export default class Model {
      * @returns The matching documents.
      */
     find(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.find({ _id: id }, filter, options);
+        return this.model.find(
+            { _id: id },
+            {
+                ...filter,
+                lean: true,
+            },
+            options,
+        );
     }
 
     /**
@@ -81,7 +89,10 @@ export default class Model {
      * @returns The matching documents.
      */
     findAll(filter?: any, options?: any): Promise<any> {
-        return this.model.find(filter, options);
+        return this.model.find(filter, {
+            ...options,
+            lean: true,
+        });
     }
 
     /**
@@ -92,7 +103,14 @@ export default class Model {
      * @returns The found document.
      */
     findOne(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.findOne(id, filter, options);
+        return this.model.findOne(
+            { _id: id },
+            {
+                ...filter,
+                lean: true,
+            },
+            options,
+        );
     }
 
     /**
@@ -105,7 +123,7 @@ export default class Model {
         return this.model.findByIdAndUpdate(
             id,
             { $set: data },
-            { upsert: true },
+            { upsert: true, lean: true },
         );
     }
 }

@@ -42,7 +42,9 @@ export const run = async (
 
     if (!(c instanceof TextChannel)) return;
 
-    let { starboard } = (await client.db.user.find(m?.author.id))[0] ?? {};
+    let { starboard } = (await client.db.user.findOne(m?.author.id, {
+        starboard: 1,
+    })) ?? {};
 
     starboard[rating] = (starboard[rating] ?? 0) + 1;
 

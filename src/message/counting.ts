@@ -42,7 +42,9 @@ export const run = async (message: any, client: IClient) => {
     const userId = message.author.id;
     const number = +message.content;
 
-    const data = (await client.db.global.find(message.guild.id))[0];
+    const data = await client.db.global.findOne(message.guild.id, {
+        counting: 1,
+    });
     const counting = data?.counting;
 
     if (!counting) {
@@ -66,7 +68,7 @@ export const run = async (message: any, client: IClient) => {
         return;
     }
 
-    const nextNumber = data.counting.number + 1;
+    const nextNumber = (counting?.number ?? 0) + 1;
 
     if (number !== nextNumber) {
         await resetCounter(
