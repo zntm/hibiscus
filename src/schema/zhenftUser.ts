@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import type { CollectionSchema } from "../class/mongoose.ts";
 
 export enum BaseValue {
     PriceGeneration = 1_000,
@@ -16,66 +16,20 @@ export enum BaseValue {
     IDLengthMax = 14,
 }
 
-export default new Schema({
-    _id: {
-        type: String,
+const schema: CollectionSchema = {
+    table: "zhenft_users",
+    columns: {
+        library: "library",
+        libraryMaxIncrement: "library_max_increment",
+        token: "token",
+        tokenMaxIncrement: "token_max_increment",
+        tokenTotal: "token_total",
+        dailyStreak: "daily_streak",
+        effects: "effects",
+        items: "items",
+        badges: "badges",
+        timeStart: "time_start",
     },
-    library: {
-        type: Object,
-        default: {},
-    },
-    libraryMaxIncrement: {
-        type: Number,
-        min: 0,
-        default: 0,
-    },
-    token: {
-        type: Number,
-        min: 0,
-        default: 0,
-    },
-    tokenMaxIncrement: {
-        type: Number,
-        min: 0,
-        default: 0,
-    },
-    tokenTotal: {
-        type: Number,
-        min: 0,
-        default: 0,
-    },
-    dailyStreak: {
-        amount: {
-            type: Number,
-            min: 0,
-            default: 0,
-        },
-        lastClaimed: {
-            type: Number,
-            min: 0,
-            default: 0,
-        },
-    },
-    effects: {
-        type: Object,
-        default: {},
-    },
-    items: {
-        inventory: {
-            type: Object,
-            default: {},
-        },
-        active: {
-            type: Object,
-            default: {},
-        },
-    },
-    badges: {
-        type: Object,
-        default: {},
-    },
-    timeStart: {
-        type: Number,
-        default: 0,
-    },
-});
+};
+
+export default schema;

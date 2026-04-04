@@ -14,16 +14,17 @@
         "@discordjs/rest": "^2.6.0",
         "@discordjs/voice": "^0.18.0",
         "@napi-rs/canvas": "^0.1.84",
+        "@supabase/supabase-js": "^2.101.1",
         "@types/express": "^5.0.6",
         "discord-api-types": "^0.38.36",
         "discord.js": "^14.25.1",
         "fflate": "^0.8.2",
-        "mongodb": "^6.21.0",
-        "mongoose": "^8.20.2"
+        "mongodb": "^6.21.0"
     },
     "scripts": {
         "build": "bun run src/.libs/build.ts",
         "dev": "bun --watch --env-file=.env.development.local build/src/index.js",
+        "migrate:supabase": "bun --env-file=.env.development.local src/.libs/migrateMongoToSupabase.ts",
         "prod": "bun --watch --env-file=.env.production.local build/src/index.js"
     }
 }

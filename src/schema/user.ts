@@ -1,24 +1,10 @@
-import { Schema } from "mongoose";
+import type { CollectionSchema } from "../class/mongoose.ts";
 
-export default new Schema({
-    _id: {
-        type: String,
+const schema: CollectionSchema = {
+    table: "users",
+    columns: {
+        starboard: "starboard",
     },
-    starboard: {
-        tier1: {
-            type: Number,
-            min: 0,
-            default: 0,
-        },
-        tier2: {
-            type: Number,
-            min: 0,
-            default: 0,
-        },
-        tier3: {
-            type: Number,
-            min: 0,
-            default: 0,
-        },
-    },
-});
+};
+
+export default schema;

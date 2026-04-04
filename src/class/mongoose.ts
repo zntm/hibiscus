@@ -1,121 +1,227 @@
-import { ButtonStyle } from "discord.js";
-import mongoose from "mongoose";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-// @ts-ignore
-mongoose
-    .connect(Bun.env?.MONGODB_URI ?? "", {
-        compressors: ["zstd", "snappy", "zlib"],
-        useBigInt64: true,
-    })
-    .then(() => console.log("MongoDB connected!"));
+export interface CollectionSchema {
+    table: string;
+    columns: Record<string, string>;
+}
+
+const supabaseUrl =
+    Bun.env?.SUPABASE_URL ??
+    Bun.env?.NEXT_PUBLIC_SUPABASE_URL ??
+    "";
+const supabaseKey =
+    Bun.env?.SUPABASE_SECRET_KEY ??
+    Bun.env?.NEXT_PUBLIC_SUPABASE_SECRET_KEY ??
+    Bun.env?.SUPABASE_PUBLISHABLE_KEY ??
+    Bun.env?.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ??
+    "";
+
+if (!supabaseUrl || !supabaseKey) {
+    console.warn("Supabase credentials are missing.");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        persistSession: false,
+    },
+});
+
+const isObject = (value: unknown) =>
+    typeof value === "object" && value !== null && !Array.isArray(value);
 
 export default class Model {
-    schema: any;
-    model: mongoose.Model<any>;
+    client: SupabaseClient;
+    schema: CollectionSchema;
 
-    /**
-     * @param collectionName The name of the MongoDB collection.
-     * @param schema The Mongoose schema definition.
-     */
-    constructor(collectionName: string, schema: any) {
+    constructor(collectionName: string, schema: CollectionSchema) {
+        if (!schema?.table) {
+            throw new Error(
+                `Missing Supabase schema definition for collection "${collectionName}".`,
+            );
+        }
+
+        this.client = supabase;
         this.schema = schema;
-        this.model = mongoose.model(collectionName, schema);
     }
 
-    /**
-     * Creates a new document in the collection.
-     * @param data The data to insert.
-     * @param options Additional options for creation.
-     * @returns The created document.
-     */
-    create(data?: any, options?: any): Promise<any> {
-        return this.model.create(data, options);
+    private getColumn(field: string) {
+        return field === "_id" ? "id" : (this.schema.columns[field] ?? field);
     }
 
-    /**
-     * Deletes documents matching the given ID or query.
-     * @param id The ID or filter query.
-     * @param options Additional delete options.
-     * @returns The deletion result.
-     */
-    delete(id: any, options?: any): Promise<any> {
-        return this.model.deleteMany(id, options);
-    }
+    private getField(column: string) {
+        if (column === "id") return "_id";
 
-    /**
-     * Checks if a document exists by its ID.
-     * @param id The ID to check.
-     * @returns True if the document exists, false otherwise.
-     */
-    async exists(id?: any): Promise<boolean> {
-        const user = await this.model.findOne({ _id: id }).select("_id").lean();
-
-        return !!user;
-    }
-
-    /**
-     * Fetches a single document by ID.
-     * @param id The document ID.
-     * @param filter The fields to return.
-     * @param options Additional query options.
-     * @returns The found document.
-     */
-    fetch(id?: string, filter?: any, options?: any): Promise<any> {
-        return this.model.findById(id, filter, options);
-    }
-
-    /**
-     * Finds multiple documents by ID.
-     * @param id The document ID or query.
-     * @param filter The fields to return.
-     * @param options Additional query options.
-     * @returns The matching documents.
-     */
-    find(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.find({ _id: id }, {
-            ...filter,
-            lean: true,
-        }, options);
-    }
-
-    /**
-     * Finds all documents matching a filter.
-     * @param filter The query filter.
-     * @param options Additional query options.
-     * @returns The matching documents.
-     */
-    findAll(filter?: any, options?: any): Promise<any> {
-        return this.model.find(filter, {
-            ...options,
-            lean: true,
-        });
-    }
-
-    /**
-     * Finds a single document matching a filter.
-     * @param id The document ID or query.
-     * @param filter The fields to return.
-     * @param options Additional query options.
-     * @returns The found document.
-     */
-    findOne(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.findOne(id, {
-            ...filter,
-            lean: true,
-        }, options);
-    }
-
-    /**
-     * Updates a document by ID, creating it if it doesn't exist.
-     * @param id The document ID.
-     * @param data The data to set.
-     * @returns The updated or created document.
-     */
-    update(id?: string, data?: any): Promise<any> {
-        return this.model.findByIdAndUpdate(
-            id,
-            { $set: data },
-            { upsert: true, lean: true },
+        const entry = Object.entries(this.schema.columns).find(([, value]) =>
+            value === column
         );
+
+        return entry?.[0] ?? column;
+    }
+
+    private getSelectColumns(filter?: Record<string, any>) {
+        if (!filter || Object.keys(filter).length === 0) {
+            return "id,*";
+        }
+
+        const columns = new Set<string>(["id"]);
+
+        for (const [field, enabled] of Object.entries(filter)) {
+            if (enabled) {
+                columns.add(this.getColumn(field));
+            }
+        }
+
+        return [...columns].join(",");
+    }
+
+    private toDocument(row: Record<string, any> | null | undefined) {
+        if (!row) return null;
+
+        const document: Record<string, any> = {
+            _id: row.id,
+        };
+
+        for (const [key, value] of Object.entries(row)) {
+            if (key === "id" || value === undefined) continue;
+
+            document[this.getField(key)] = value;
+        }
+
+        return document;
+    }
+
+    private toRow(data?: Record<string, any>) {
+        if (!data) return {};
+
+        const row: Record<string, any> = {};
+
+        for (const [field, value] of Object.entries(data)) {
+            if (value === undefined) continue;
+
+            row[this.getColumn(field)] = value;
+        }
+
+        return row;
+    }
+
+    private applyQuery<T>(query: T, filter?: any): T {
+        if (!filter) return query;
+
+        if (!isObject(filter)) {
+            // @ts-ignore
+            return query.eq("id", filter);
+        }
+
+        let scopedQuery: any = query;
+
+        for (const [field, value] of Object.entries(filter)) {
+            if (value === undefined) continue;
+
+            scopedQuery = scopedQuery.eq(this.getColumn(field), value);
+        }
+
+        return scopedQuery;
+    }
+
+    private async unwrap<T>(promise: PromiseLike<{ data: T; error: any }>) {
+        const { data, error } = await promise;
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return data;
+    }
+
+    create(data?: any): Promise<any> {
+        const row = this.toRow(data);
+
+        return this.unwrap(
+            this.client.from(this.schema.table).insert(row).select().maybeSingle(),
+        ).then((value) => this.toDocument(value));
+    }
+
+    async delete(id: any): Promise<any> {
+        const query = this.applyQuery(
+            this.client.from(this.schema.table).delete().select("id"),
+            isObject(id) ? id : { _id: id },
+        );
+        const data = await this.unwrap(query);
+
+        return data.map((entry: any) => this.toDocument(entry));
+    }
+
+    async exists(id?: any): Promise<boolean> {
+        const data = await this.unwrap(
+            this.client
+                .from(this.schema.table)
+                .select("id")
+                .eq("id", id)
+                .limit(1),
+        );
+
+        return data.length > 0;
+    }
+
+    fetch(id?: string, filter?: any): Promise<any> {
+        return this.findOne({ _id: id }, filter);
+    }
+
+    async find(id?: any, filter?: any): Promise<any> {
+        const data = await this.unwrap(
+            this.applyQuery(
+                this.client
+                    .from(this.schema.table)
+                    .select(this.getSelectColumns(filter)),
+                isObject(id) ? id : { _id: id },
+            ),
+        );
+
+        return data.map((entry: any) => this.toDocument(entry));
+    }
+
+    async findAll(filter?: any): Promise<any> {
+        const data = await this.unwrap(
+            this.applyQuery(
+                this.client.from(this.schema.table).select("id,*"),
+                filter,
+            ),
+        );
+
+        return data.map((entry: any) => this.toDocument(entry));
+    }
+
+    async findOne(id?: any, filter?: any): Promise<any> {
+        const data = await this.unwrap(
+            this.applyQuery(
+                this.client
+                    .from(this.schema.table)
+                    .select(this.getSelectColumns(filter))
+                    .limit(1)
+                    .maybeSingle(),
+                isObject(id) ? id : { _id: id },
+            ),
+        );
+
+        return this.toDocument(data);
+    }
+
+    async update(id?: string, data?: any): Promise<any> {
+        const row = {
+            id,
+            ...this.toRow(data),
+        };
+
+        const updated = await this.unwrap(
+            this.client
+                .from(this.schema.table)
+                .upsert(row, { onConflict: "id" })
+                .select("id,*")
+                .maybeSingle(),
+        );
+
+        return this.toDocument(updated);
     }
 }

@@ -1,2 +1,2 @@
 // @bun
-import{Schema as e}from"mongoose";var p=new e({_id:{type:String},itemShop:{type:Object,default:{}}});export{p as default};
+var o={table:"zhenft_globals",columns:{itemShop:"item_shop"}},t=o;export{t as default};

@@ -1,2 +1,2 @@
 // @bun
-import{Schema as t}from"mongoose";var a;((e)=>{e[e.IsUserStrict=1]="IsUserStrict";e[e.IsNumberStrict=2]="IsNumberStrict"})(a||={});var r=new t({_id:{type:String},counting:{value:{type:Number,min:0,default:0},lastUser:{type:String,default:null},lastTime:{type:Date,default:null},settings:{type:Number,min:0,default:0},type:Object,default:null},canvas:{data:{type:Object,default:{}},size:{type:Number,min:0,default:0}}});export{r as default,a as CountingSettings};
+var o;((c)=>{c[c.IsUserStrict=1]="IsUserStrict";c[c.IsNumberStrict=2]="IsNumberStrict"})(o||={});var a={table:"globals",columns:{counting:"counting",canvas:"canvas"}},l=a;export{l as default,o as CountingSettings};

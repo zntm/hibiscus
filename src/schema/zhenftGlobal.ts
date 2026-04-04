@@ -1,11 +1,10 @@
-import { Schema } from "mongoose";
+import type { CollectionSchema } from "../class/mongoose.ts";
 
-export default new Schema({
-    _id: {
-        type: String,
+const schema: CollectionSchema = {
+    table: "zhenft_globals",
+    columns: {
+        itemShop: "item_shop",
     },
-    itemShop: {
-        type: Object,
-        default: {},
-    },
-});
+};
+
+export default schema;
