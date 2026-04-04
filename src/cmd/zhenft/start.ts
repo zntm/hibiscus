@@ -5,6 +5,7 @@ import {
 import type { IClient } from "../../index.ts";
 import ZhenFTUtils from "../../class/zhenftUtils.ts";
 import { BaseValue } from "../../schema/zhenftUser.ts";
+import ZhenFTProgress from "../../class/zhenftProgress.ts";
 
 export const run = async (
     interaction: ChatInputCommandInteraction,
@@ -22,13 +23,13 @@ export const run = async (
     await interaction.deferReply();
 
     const time = new Date().getTime();
-
-    await client.db.zhenftUser.update(interaction.user.id, {
+    const profileData = ZhenFTProgress.ensureUserData({
         library: {},
         libraryMaxIncrement: 0,
         token: BaseValue.TokenInit,
         tokenMaxIncrement: 0,
         tokenTotal: BaseValue.TokenInit,
+        collectionTotal: 0,
         dailyStreak: {
             amount: 0,
             lastClaimed: 0,
@@ -46,6 +47,8 @@ export const run = async (
         badges: {},
         timeStart: time,
     });
+
+    await client.db.zhenftUser.update(interaction.user.id, profileData);
 
     const embed = ZhenFTUtils
         .embed(client, "Profile Created")

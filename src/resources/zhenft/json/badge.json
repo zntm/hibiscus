@@ -20,17 +20,17 @@
         "rarity": "rare"
     },
     "zhenft250": {
-        "name": "500 ZhenFTs Collected",
+        "name": "250 ZhenFTs Collected",
         "emoji": "1077561275300724786",
         "rarity": "epic"
     },
     "zhenft500": {
-        "name": "1,000 ZhenFTs Collected",
+        "name": "500 ZhenFTs Collected",
         "emoji": "1077561275300724786",
         "rarity": "epic"
     },
     "zhenft1000": {
-        "name": "250 ZhenFTs Collected",
+        "name": "1,000 ZhenFTs Collected",
         "emoji": "1077561275300724786",
         "rarity": "epic"
     }

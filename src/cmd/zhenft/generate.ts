@@ -7,6 +7,7 @@ import type { IClient } from "../../index.ts";
 import ZhenFTUtils from "../../class/zhenftUtils.ts";
 import { BaseValue } from "../../schema/zhenftUser.ts";
 import { ZhenFT } from "../../class/zhenft.ts";
+import ZhenFTProgress from "../../class/zhenftProgress.ts";
 
 export const run = async (
     interaction: ChatInputCommandInteraction,
@@ -21,9 +22,7 @@ export const run = async (
         );
     }
 
-    userData.library ??= {};
-    userData.libraryMaxIncrement ??= 0;
-    userData.token ??= 0;
+    ZhenFTProgress.ensureUserData(userData);
 
     if (userData.token < BaseValue.PriceGeneration) {
         return client.utils.interactionWarning(
@@ -32,7 +31,7 @@ export const run = async (
         );
     }
 
-    const libraryMax = BaseValue.LibraryMax + userData.libraryMaxIncrement;
+    const libraryMax = ZhenFTProgress.getLibraryMax(userData);
 
     if (Object.keys(userData.library).length >= libraryMax) {
         return client.utils.interactionWarning(
@@ -62,6 +61,8 @@ export const run = async (
 
     userData.token -= BaseValue.PriceGeneration;
     userData.library[id] = zhenft;
+    ++userData.collectionTotal;
+    const unlockedBadges = ZhenFTProgress.syncBadges(userData);
 
     await client.db.zhenftUser.update(interaction.user.id, userData);
 
@@ -91,7 +92,7 @@ export const run = async (
             },
             {
                 name: "Balance",
-                value: `${client.utils.formatNumber(userData.token)} tokens`,
+                value: `${client.utils.formatNumber(userData.token)} / ${client.utils.formatNumber(ZhenFTProgress.getTokenMax(userData))} tokens`,
                 inline: true,
             },
             {
@@ -103,6 +104,14 @@ export const run = async (
                     `Head: ${ZhenFTUtils.getPartName("head", head)}`,
                 ].join("\n"),
             },
+            ...(unlockedBadges.length > 0
+                ? [{
+                    name: "New Badges",
+                    value:
+                        ZhenFTProgress.formatUnlockedBadges(unlockedBadges) ??
+                        "None",
+                }]
+                : []),
         );
 
     return interaction.editReply({

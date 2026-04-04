@@ -5,6 +5,7 @@ import {
 import type { IClient } from "../../index.ts";
 import ZhenFTUtils from "../../class/zhenftUtils.ts";
 import { BaseValue } from "../../schema/zhenftUser.ts";
+import ZhenFTProgress from "../../class/zhenftProgress.ts";
 
 const DAY_MS = 1_000 * 60 * 60 * 24;
 
@@ -21,13 +22,7 @@ export const run = async (
         );
     }
 
-    userData.dailyStreak ??= {
-        amount: 0,
-        lastClaimed: 0,
-    };
-    userData.token ??= 0;
-    userData.tokenMaxIncrement ??= 0;
-    userData.tokenTotal ??= 0;
+    ZhenFTProgress.ensureUserData(userData);
 
     const now = new Date().getTime();
     const lastClaimed = userData.dailyStreak.lastClaimed ?? 0;
@@ -63,7 +58,7 @@ export const run = async (
 
     dailyToken += streakBonus;
 
-    const tokenMax = BaseValue.TokenMax + userData.tokenMaxIncrement;
+    const tokenMax = ZhenFTProgress.getTokenMax(userData);
     const tokenBefore = userData.token;
     const tokenAfter = Math.min(tokenBefore + dailyToken, tokenMax);
     const lostTokens = tokenBefore + dailyToken - tokenAfter;
@@ -73,6 +68,7 @@ export const run = async (
     userData.tokenTotal += claimedTokens;
     userData.dailyStreak.amount = nextStreakAmount;
     userData.dailyStreak.lastClaimed = now;
+    const unlockedBadges = ZhenFTProgress.syncBadges(userData);
 
     await client.db.zhenftUser.update(interaction.user.id, userData);
 
@@ -89,6 +85,9 @@ export const run = async (
         `Current streak: **${client.utils.formatNumber(nextStreakAmount)} day${nextStreakAmount === 1 ? "" : "s"}**.`,
         `Balance: **${client.utils.formatNumber(userData.token)} / ${client.utils.formatNumber(tokenMax)} tokens**.`,
         `Next claim: <t:${Math.floor((now + DAY_MS) / 1_000)}:R>.`,
+        unlockedBadges.length > 0
+            ? `New badges:\n${ZhenFTProgress.formatUnlockedBadges(unlockedBadges)}`
+            : null,
     ]
         .filter(Boolean)
         .join("\n");

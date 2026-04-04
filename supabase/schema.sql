@@ -21,6 +21,7 @@ create table if not exists public.zhenft_users (
     token bigint default 0,
     token_max_increment bigint default 0,
     token_total bigint default 0,
+    collection_total bigint default 0,
     daily_streak jsonb default jsonb_build_object('amount', 0, 'lastClaimed', 0),
     effects jsonb default '{}'::jsonb,
     items jsonb default jsonb_build_object(

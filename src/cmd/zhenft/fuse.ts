@@ -9,6 +9,7 @@ import itemData from "../../resources/zhenft/json/item.json";
 import { BaseValue } from "../../schema/zhenftUser.ts";
 import ZhenFTUtils from "../../class/zhenftUtils.ts";
 import { ZhenFT } from "../../class/zhenft.ts";
+import ZhenFTProgress from "../../class/zhenftProgress.ts";
 
 const blendColor = (color1: string, color2: string) => {
     const [r1, g1, b1] = [1, 3, 5].map((index) =>
@@ -60,13 +61,7 @@ export const run = async (
         );
     }
 
-    userData.library ??= {};
-    userData.items ??= {
-        inventory: {},
-        active: {},
-    };
-    userData.items.inventory ??= {};
-    userData.items.active ??= {};
+    ZhenFTProgress.ensureUserData(userData);
 
     const zhenftId1 = interaction.options.getString("zhenft1") ?? "";
     const zhenftId2 = interaction.options.getString("zhenft2") ?? "";
@@ -165,6 +160,8 @@ export const run = async (
     delete userData.library[zhenftId1];
     delete userData.library[zhenftId2];
     userData.library[id] = zhenft;
+    ++userData.collectionTotal;
+    const unlockedBadges = ZhenFTProgress.syncBadges(userData);
 
     await client.db.zhenftUser.update(interaction.user.id, userData);
 
@@ -209,6 +206,14 @@ export const run = async (
                 ),
                 inline: true,
             },
+            ...(unlockedBadges.length > 0
+                ? [{
+                    name: "New Badges",
+                    value:
+                        ZhenFTProgress.formatUnlockedBadges(unlockedBadges) ??
+                        "None",
+                }]
+                : []),
         );
 
     return interaction.editReply({

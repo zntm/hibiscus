@@ -5,39 +5,7 @@ import {
 import type { IClient } from "../../index.ts";
 import ZhenFTUtils from "../../class/zhenftUtils.ts";
 import itemData from "../../resources/zhenft/json/item.json";
-
-const DAY_MS = 1_000 * 60 * 60 * 24;
-const WEEK_MS = DAY_MS * 7;
-const SHOP_ITEM_IDS = [
-    "fusionCatalyst",
-    "fusionAmplifier",
-    "tokenExpansion",
-    "libraryExpansion",
-] as const;
-
-type ShopItemId = (typeof SHOP_ITEM_IDS)[number];
-
-class ShopItem {
-    public amount: number;
-    public price: number;
-    public lastRefresh: number;
-
-    constructor(amount: number, price: number, lastRefresh: number = Date.now()) {
-        this.amount = amount;
-        this.price = price;
-        this.lastRefresh = lastRefresh;
-    }
-}
-
-const buildShopItem = (id: ShopItemId) => {
-    const data = itemData[id].itemShop;
-
-    return new ShopItem(data.suggestedAmount, data.suggestedPrice);
-};
-
-const getRefreshWindow = (refreshType: string) => {
-    return refreshType === "weekly" ? WEEK_MS : DAY_MS;
-};
+import { SHOP_ITEM_IDS, syncItemShop } from "../../class/zhenftShop.ts";
 
 export const run = async (
     interaction: ChatInputCommandInteraction,
@@ -46,38 +14,13 @@ export const run = async (
     await interaction.deferReply();
 
     const guildId = interaction.guild?.id ?? "global";
-    const itemShopData =
-        (await client.db.zhenftGlobal.find(guildId, { itemShop: 1 }))[0]
-            ?.itemShop ?? {};
-    let shouldPersist = false;
-
-    for (const id of SHOP_ITEM_IDS) {
-        const refreshType = itemData[id].itemShop.refreshType;
-        const currentItem = itemShopData[id];
-
-        if (!currentItem) {
-            itemShopData[id] = buildShopItem(id);
-            shouldPersist = true;
-            continue;
-        }
-
-        const lastRefresh = currentItem.lastRefresh ?? 0;
-
-        if (Date.now() - lastRefresh >= getRefreshWindow(refreshType)) {
-            itemShopData[id] = buildShopItem(id);
-            shouldPersist = true;
-        }
-    }
-
-    if (shouldPersist) {
-        await client.db.zhenftGlobal.update(guildId, {
-            itemShop: itemShopData,
-        });
-    }
+    const itemShopData = await syncItemShop(client, guildId);
 
     const embed = ZhenFTUtils
         .embed(client, "Item Shop")
-        .setDescription("Current stock for ZhenFT utility items.");
+        .setDescription(
+            "Current stock for ZhenFT utility items.\nUse `/zhenft buy` to purchase from this shop.",
+        );
 
     for (const id of SHOP_ITEM_IDS) {
         const data = itemShopData[id];
