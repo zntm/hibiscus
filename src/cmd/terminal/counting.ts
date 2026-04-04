@@ -2,7 +2,7 @@ import { Attachment, ChatInputCommandInteraction } from "discord.js";
 
 import { IClient } from "../../index.ts";
 import { TerminalMetadata } from "../../class/metadata.ts";
-import { CountingSettings } from "../../schema/global.ts";
+import { CountingSettings } from "../../message/counting.ts";
 
 const toggleSetting = async (
     interaction: ChatInputCommandInteraction,

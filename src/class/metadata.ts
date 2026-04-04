@@ -74,7 +74,7 @@ export class CommandMetadata extends Metadata {
     }
 }
 
-export class ContextMetadata extends Metadata {}
+export class ContextMetadata extends Metadata { }
 
 export class TerminalMetadata {
     private _channels?: string[];
@@ -190,7 +190,7 @@ export class TerminalMetadata {
      * @returns Whether the user is allowed.
      */
     hasUser(user: string | string[]) {
-        return this._hasValue(user, "_user");
+        return this._hasValue(user, "_users");
     }
 
     /**

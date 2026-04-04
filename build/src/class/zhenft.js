@@ -1,0 +1,2 @@
+// @bun
+var c;((s)=>{s[s.Common=0]="Common";s[s.Uncommon=1]="Uncommon";s[s.Rare=2]="Rare";s[s.Epic=3]="Epic";s[s.Mythic=4]="Mythic"})(c||={});class g{owners;color;accessory;body;face;head;obtained;constructor(n,r,o,i,e,s){this.owners=[],this.color=n,this.accessory=r,this.body=o,this.face=i,this.head=e,this.obtained=s}addOwner(n,r){return this.owners.push(new t(n,r)),this}}class t{id;obtained;constructor(n,r){this.id=n,this.obtained=r}}export{c as ZhenFTRarity,t as ZhenFTOwner,g as ZhenFT};

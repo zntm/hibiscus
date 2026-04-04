@@ -86,18 +86,6 @@ const loadSchemas = () =>
             (client.db[name] = new Model(name, command)),
     );
 
-const activities = ["Catharsis", "Leap of Faith", "Phantasia", "Ruins"];
-let activityIndex = Math.floor(Math.random() * activities.length);
-
-const updateActivity = (client: IClient): void => {
-    client.user.setActivity({
-        name: activities[activityIndex],
-        type: ActivityType.Playing,
-    });
-
-    activityIndex = (activityIndex + 1) % activities.length;
-};
-
 client.on(Events.ClientReady, async () => {
     await Promise.all([
         loadCommandsPush("cmd"),
@@ -107,12 +95,12 @@ client.on(Events.ClientReady, async () => {
         loadSchemas(),
     ]);
 
-    console.log(client.db);
-
     console.log(`${client.user.username} is online!`);
 
-    updateActivity(client);
-    setInterval(updateActivity, 1_000 * 60 * 15, client);
+    client.user.setActivity({
+        name: "Watering the Hibiscus Garden",
+        type: ActivityType.Playing,
+    });
 
     // NOTE: Toggle if commands need to be reloaded
     if (false) {

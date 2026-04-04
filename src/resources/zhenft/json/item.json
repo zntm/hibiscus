@@ -1,0 +1,46 @@
+{
+    "fusionCatalyst": {
+        "name": "Fusion Catalyst",
+        "description": "Used to fuse two of your ZhenFTs.",
+        "rarity": "common",
+        "emoji": "🌿",
+        "itemShop": {
+            "refreshType": "daily",
+            "suggestedAmount": 250,
+            "suggestedPrice": 1500
+        }
+    },
+    "fusionAmplifier": {
+        "name": "Fusion Amplifier",
+        "description": "Increases the chance of selecting rarer parts when fusing.",
+        "rarity": "uncommon",
+        "emoji": "📈",
+        "itemShop": {
+            "refreshType": "daily",
+            "suggestedAmount": 250,
+            "suggestedPrice": 2500
+        }
+    },
+    "tokenExpansion": {
+        "name": "Token Pouch",
+        "description": "Increases your token max amount by 2,500.",
+        "rarity": "rare",
+        "emoji": "💰",
+        "itemShop": {
+            "refreshType": "weekly",
+            "suggestedAmount": 100,
+            "suggestedPrice": 10000
+        }
+    },
+    "libraryExpansion": {
+        "name": "Storage Expansion",
+        "description": "Increases your ZhenFT storage by 10 slots.",
+        "rarity": "epic",
+        "emoji": "🗝️",
+        "itemShop": {
+            "refreshType": "weekly",
+            "suggestedAmount": 50,
+            "suggestedPrice": 15000
+        }
+    }
+}

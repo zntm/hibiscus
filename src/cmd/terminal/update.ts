@@ -10,38 +10,38 @@ import {
 import { IClient } from "../../index.ts";
 import { TerminalMetadata } from "../../class/metadata.ts";
 
-const components: any = [
+const components = [
     new TextInputBuilder()
         .setCustomId("name")
         .setLabel("Enter Name")
         .setStyle(TextInputStyle.Short)
         .setMinLength(1)
-        .setMaxLength(50),
+        .setMaxLength(100),
     new TextInputBuilder()
         .setCustomId("emoji")
         .setLabel("Enter Emoji")
         .setStyle(TextInputStyle.Short)
         .setMinLength(1)
-        .setMaxLength(50),
+        .setMaxLength(100),
     new TextInputBuilder()
         .setCustomId("version")
         .setLabel("Enter Version")
         .setStyle(TextInputStyle.Short)
         .setMinLength(1)
-        .setMaxLength(50),
+        .setMaxLength(100),
     new TextInputBuilder()
         .setCustomId("url")
         .setLabel("Enter URL")
         .setStyle(TextInputStyle.Paragraph)
         .setMinLength(1)
-        .setMaxLength(250),
+        .setMaxLength(1000),
     new TextInputBuilder()
         .setCustomId("changes")
         .setLabel("Enter Changes")
         .setStyle(TextInputStyle.Paragraph)
         .setMinLength(1)
-        .setMaxLength(500),
-].map((i: TextInputBuilder) => new ActionRowBuilder().addComponents(i));
+        .setMaxLength(1000),
+].map((i) => new ActionRowBuilder<TextInputBuilder>().addComponents(i));
 
 const modal = new ModalBuilder()
     .setCustomId("update")

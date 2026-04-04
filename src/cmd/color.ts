@@ -208,16 +208,14 @@ export const run = async (
         .setThumbnail(`attachment://thumbnail.png`)
         .setDescription(
             `Closest Name 〃 ${nearestColorName(r, g, b)}\n` +
-                `Hex 〃 ${hex.toUpperCase()}\n` +
-                `RGB 〃 ${r}, ${g}, ${b}\n` +
-                `HSV 〃 ${h}, ${s}, ${v}\n` +
-                `HSL 〃 ${hsl.h}, ${hsl.s}%, ${hsl.l}%\n` +
-                `CMYK 〃 ${Math.round(cmyk.c * 10000) / 100}, ${
-                    Math.round(cmyk.m * 10000) / 100
-                }, ${Math.round(cmyk.y * 10000) / 100}, ${
-                    Math.round(cmyk.k * 10000) / 100
-                }\n` +
-                `Decimal 〃 ${decimal}`,
+            `Hex 〃 ${hex.toUpperCase()}\n` +
+            `RGB 〃 ${r}, ${g}, ${b}\n` +
+            `HSV 〃 ${h}, ${s}, ${v}\n` +
+            `HSL 〃 ${hsl.h}, ${hsl.s}%, ${hsl.l}%\n` +
+            `CMYK 〃 ${Math.round(cmyk.c * 10000) / 100}, ${Math.round(cmyk.m * 10000) / 100
+            }, ${Math.round(cmyk.y * 10000) / 100}, ${Math.round(cmyk.k * 10000) / 100
+            }\n` +
+            `Decimal 〃 ${decimal}`,
         )
         .setImage(`attachment://colors.png`)
         .setFooter({

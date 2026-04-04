@@ -1,0 +1,127 @@
+{
+    "accessory": {
+        "0": {
+            "weight": 5,
+            "rarity": "common",
+            "price": 100
+        }
+    },
+    "body": {
+        "lab_coat": {
+            "name": "Lab Coat",
+            "weight": 50,
+            "rarity": "uncommon",
+            "price": 500
+        },
+        "sweater_black": {
+            "name": "Sweater (Black)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_blue": {
+            "name": "Sweater (Blue)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_cyan": {
+            "name": "Sweater (Cyan)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_green": {
+            "name": "Sweater (Green)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_light_blue": {
+            "name": "Sweater (Light Blue)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_lime": {
+            "name": "Sweater (Lime)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_orange": {
+            "name": "Sweater (Orange)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_pink": {
+            "name": "Sweater (Pink)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_purple": {
+            "name": "Sweater (Purple)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_red": {
+            "name": "Sweater (Red)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_white": {
+            "name": "Sweater (White)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        },
+        "sweater_yellow": {
+            "name": "Sweater (Yellow)",
+            "weight": 40,
+            "rarity": "common",
+            "price": 100
+        }
+    },
+    "face": {
+        "0": {
+            "weight": 5,
+            "rarity": "common",
+            "price": 100
+        },
+        "glasses": {
+            "name": "Glasses",
+            "weight": 50,
+            "rarity": "common",
+            "price": 100
+        },
+        "neutral": {
+            "name": "Neutral",
+            "weight": 50,
+            "rarity": "common",
+            "price": 100
+        }
+    },
+    "head": {
+        "0": {
+            "weight": 5,
+            "rarity": "common",
+            "price": 100
+        },
+        "boop": {
+            "name": "Boop",
+            "weight": 50,
+            "rarity": "common",
+            "price": 100
+        },
+        "unkempt": {
+            "name": "Unkempt",
+            "weight": 50,
+            "rarity": "common",
+            "price": 100
+        }
+    }
+}

@@ -42,10 +42,19 @@ Bun.build({
             name: "replace ts & json with js",
             setup: (build) => {
                 build.onLoad({ filter: /\.ts$/ }, async (args) => {
-                    let contents = (await Bun.file(args.path).text()).replace(
-                        /\.(ts|json)"/g,
-                        '.js"',
-                    );
+                    let contents = await Bun.file(args.path).text();
+
+                    for (const ext of ["json", "ts"]) {
+                        const regex = new RegExp(`\\.(${ext})\\"`, "g");
+
+                        const matches = contents.match(regex);
+
+                        if (matches) {
+                            for (const match of matches) {
+                                contents = contents.replace(match, '.js"');
+                            }
+                        }
+                    }
 
                     if (contents.includes("__dirname")) {
                         contents =

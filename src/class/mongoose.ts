@@ -72,14 +72,10 @@ export default class Model {
      * @returns The matching documents.
      */
     find(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.find(
-            { _id: id },
-            {
-                ...filter,
-                lean: true,
-            },
-            options,
-        );
+        return this.model.find({ _id: id }, {
+            ...filter,
+            lean: true,
+        }, options);
     }
 
     /**
@@ -103,14 +99,10 @@ export default class Model {
      * @returns The found document.
      */
     findOne(id?: any, filter?: any, options?: any): Promise<any> {
-        return this.model.findOne(
-            { _id: id },
-            {
-                ...filter,
-                lean: true,
-            },
-            options,
-        );
+        return this.model.findOne(id, {
+            ...filter,
+            lean: true,
+        }, options);
     }
 
     /**

@@ -130,11 +130,8 @@ export const run = async (
         }
     }
 
-    const canvasData = (
-        await client.db.global.findOne(interaction.guild?.id, {
-            canvas: 1,
-        })
-    )?.canvas;
+    const canvasData = (await client.db.global.findOne(interaction.guild?.id))
+        ?.canvas;
 
     if (canvasData) {
         canvasData.data = decompressCanvasData(canvasData.data);

@@ -105,4 +105,4 @@ export const run = async (message: any, client: IClient) => {
     );
 };
 
-export const info = new TerminalMetadata().addChannel(channel.counting);
+export const metadata = new TerminalMetadata().addChannel(channel.counting);

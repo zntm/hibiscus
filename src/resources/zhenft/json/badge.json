@@ -1,0 +1,37 @@
+{
+    "daily30": {
+        "name": "30-Day Daily Streak",
+        "emoji": "1077527162049024020",
+        "rarity": "uncommon"
+    },
+    "daily100": {
+        "name": "100-Day Daily Streak",
+        "emoji": "1077527162049024020",
+        "rarity": "uncommon"
+    },
+    "daily365": {
+        "name": "365-Day Daily Streak",
+        "emoji": "1077527162049024020",
+        "rarity": "uncommon"
+    },
+    "zhenft100": {
+        "name": "100 ZhenFTs Collected",
+        "emoji": "1077561279117537281",
+        "rarity": "rare"
+    },
+    "zhenft250": {
+        "name": "500 ZhenFTs Collected",
+        "emoji": "1077561275300724786",
+        "rarity": "epic"
+    },
+    "zhenft500": {
+        "name": "1,000 ZhenFTs Collected",
+        "emoji": "1077561275300724786",
+        "rarity": "epic"
+    },
+    "zhenft1000": {
+        "name": "250 ZhenFTs Collected",
+        "emoji": "1077561275300724786",
+        "rarity": "epic"
+    }
+}
